@@ -1,0 +1,40 @@
+Web of Science — Advanced Search
+Versão 1 (24/06/2026). Estratégia RESTRITIVA (metalinguística) refinada.
+
+Ajustes em relação à query do roteiro (seção 4.1):
+- retirado o truncamento de "analog*" (arrastava "analogous" em uso não
+  figurativo); fixado "analogy" OR "analogical".
+- removidas as aspas de "rhetoric*" (no WoS aspas marcam frase exata e podem
+  desligar o truncamento); termo único trunca sem aspas.
+- acrescentados anthropomorph* e personif*, centrais ao foco do projeto na
+  antropomorfização, ausentes da query original.
+- ampliado o bloco de termos de IA (language model*, generative AI, foundation
+  model*, natural language processing).
+- fixados DT (tipo de documento) e LA (idioma) como campos da própria busca.
+
+--------------------------------------------------------------------------------
+TS=("artificial intelligence" OR "machine learning" OR "deep learning"
+    OR "neural network*" OR "large language model*" OR "language model*"
+    OR "generative AI" OR "foundation model*" OR "natural language processing")
+AND TS=(metaphor* OR figurative OR figuration* OR trope* OR imagery
+    OR rhetoric* OR anthropomorph* OR personif* OR "analogy" OR "analogical")
+AND PY=(2015-2026)
+AND DT=(Article OR Review OR "Proceedings Paper")
+AND LA=(English OR Portuguese OR Spanish)
+--------------------------------------------------------------------------------
+
+Ganchos de decisão (ver docs/decisoes_metodologicas.md seção 2):
+- DT inclui "Proceedings Paper" (decisão 2.a, incluir anais). Remover para excluir.
+- LA inclui Portuguese e Spanish (decisão 2.c). Restringir a English se for o caso.
+
+ESTRATÉGIA AMPLA (uso implícito): remover o segundo bloco AND TS=(metaphor* ...).
+O corpus salta para dezenas de milhares e exige amostragem (seção 4.1 do roteiro).
+Não rodar a ampla sem busca-piloto de dimensionamento.
+
+PROTOCOLO DE BUSCA-PILOTO (antes de fixar a query):
+1. Rodar a restritiva acima, registrar o total de registros retornados.
+2. Exportar os 50 primeiros por relevância; ler os 20 primeiros títulos/resumos.
+3. Anotar falsos positivos e calibrar termos (candidatos a remover: imagery, se
+   trouxer ruído de processamento de imagem; rhetoric*, se trouxer retórica não
+   figurativa).
+4. Registrar contagem e decisão de calibração em docs/prisma/contagem_prisma.md.

@@ -1,0 +1,44 @@
+# Tramar a IA: dependências Python (espelho do pyproject.toml)
+
+# Importação e parsing de exportações bibliográficas
+pandas>=2.2.0
+numpy>=1.26.0
+rispy>=0.9.0          # leitura de arquivos RIS (Scopus, WoS)
+bibtexparser>=1.4.0   # leitura de BibTeX quando aplicável
+
+# Processamento de texto
+spacy>=3.7.0
+nltk>=3.8.0
+
+# Configuração via .env
+python-dotenv>=1.0.0
+
+# Catálogo de famílias em YAML
+PyYAML>=6.0
+
+# Análise quantitativa e modelagem de tópicos
+scikit-learn>=1.4.0
+gensim>=4.3.0
+# bertopic>=0.16.0    # opcional; descomente para topic modeling neural
+
+# Redes de co-ocorrência
+networkx>=3.2
+python-louvain>=0.16
+
+# Visualização
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Utilitários
+tqdm>=4.66.0
+rich>=13.7.0
+
+# Modelos spaCy: baixar após instalar com pip
+# python -m spacy download en_core_web_sm
+# python -m spacy download pt_core_news_sm
+# python -m spacy download es_core_news_sm
+
+# Desenvolvimento (opcional)
+# black>=24.0.0
+# ruff>=0.3.0
+# pytest>=8.0.0

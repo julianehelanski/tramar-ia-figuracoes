@@ -1,0 +1,97 @@
+# Catálogo de famílias semânticas figurativas a rastrear na literatura de IA.
+#
+# Hierarquia: familia -> metadados.
+# Metadados por família:
+#   termos      lista de variantes (case-insensitive, word-boundary; espaços
+#               tornam-se \s+ no script de codificação).
+#   exclusoes   (opcional) expressões que, no trecho central casado ou nas 5
+#               palavras adjacentes, descartam a ocorrência como ruído.
+#   desambiguar (opcional, bool) marca família cujos termos exigem camada manual
+#               de classificação (bruto vs. figurativo) em CSV auditável, no molde
+#               da desambiguação war/wars do projeto Latour.
+#   nota        nota analítica curta, usada nos relatórios.
+#
+# Fonte da verdade para os scripts. A justificativa argumentativa fica em
+# docs/decisoes_metodologicas.md. Catálogo aberto: revisado e expandido durante a
+# codificação à medida que novas figurações emergem do material (registrar cada
+# adição em docs/historico.md).
+
+textil:
+  termos: ["weave", "weaving", "woven", "network", "networks", "fabric", "thread",
+           "threads", "knot", "knots", "fiber", "fibre", "mesh", "lace", "braid",
+           "tapestry", "quilt", "crazy quilt", "patchwork", "seam", "seams",
+           "stitch", "loom", "yarn", "string figure", "string figures"]
+  exclusoes: ["neural network", "neural networks", "deep network", "convolutional network"]
+  nota: "Família-hipótese do projeto. 'network' é o termo de fronteira: têxtil em
+    Haraway, técnico-literal em IA. A exclusão remove os usos compostos com
+    'neural/deep/convolutional'; usos isolados de 'network' exigem leitura. Cruzar
+    com o catálogo têxtil de analise-figuracoes-latour."
+
+biologica:
+  termos: ["neural", "brain", "brains", "learning", "learn", "organism", "evolve",
+           "evolution", "mutation", "ecosystem", "growth", "grow", "generation",
+           "neuron", "neurons", "synapse", "synaptic", "genetic", "dna", "cell",
+           "organic", "adapt", "adaptation", "natural selection"]
+  nota: "Registro biológico-orgânico. 'neural' e 'learning' são também
+    técnico-literais; ver família antropomórfica e a salvaguarda de homonímia."
+
+mecanica:
+  termos: ["machine", "machinery", "engine", "system", "architecture", "pipeline",
+           "infrastructure", "framework", "scaffold", "scaffolding", "module",
+           "mechanism", "gear", "cog", "wheel", "lever", "apparatus"]
+  nota: "Registro mecânico-industrial. 'pipeline' é compartilhado com a família
+    oceânica/líquida; classificar pelo contexto."
+
+militar:
+  termos: ["deploy", "deployment", "target", "targeting", "weapon", "weaponize",
+           "defense", "defence", "attack", "adversarial", "strategy", "strategic",
+           "operation", "surveillance", "command", "arms race", "battlefield",
+           "frontier", "campaign", "threat", "offensive"]
+  desambiguar: true
+  nota: "Registro militar-industrial, ressonante com o vocabulário latouriano.
+    'deploy', 'target' e 'operation' têm uso técnico trivial em engenharia de
+    software; exigem desambiguação manual (descritivo-técnico vs. figurativo)."
+
+oceanica:
+  termos: ["stream", "streaming", "flow", "flows", "dive", "deep", "depth", "ocean",
+           "current", "tide", "fluid", "fluidity", "immersion", "immerse", "pipeline",
+           "wave", "waves", "surface", "drift", "flood", "torrent"]
+  nota: "Registro oceânico-líquido. 'deep' é o termo de fronteira: literal em 'deep
+    learning', figurativo em metáforas de profundidade. Desambiguar 'deep' quando
+    isolado de 'learning/network'."
+
+religiosa:
+  termos: ["oracle", "prophet", "prophecy", "revelation", "faith", "magic", "magical",
+           "miracle", "soul", "spirit", "conjure", "summon", "divine", "sacred",
+           "ritual", "alchemy", "alchemist", "god", "godlike", "omniscient", "sentient"]
+  nota: "Registro religioso-místico. Frequente em literatura crítica e jornalística
+    sobre IA; rastrear se aparece em registro técnico ou só em registro crítico."
+
+antropomorfica:
+  termos: ["intelligent", "intelligence", "understand", "understanding", "learn",
+           "decide", "decision", "hallucinate", "hallucination", "dream", "reason",
+           "reasoning", "think", "thinking", "know", "knowledge", "attention",
+           "memory", "perceive", "perception", "believe", "belief", "aware",
+           "awareness", "imagine", "creative", "agent", "agentic"]
+  desambiguar: true
+  nota: "Registro dominante do campo e raramente assinalado como figurativo. Vários
+    termos ('attention', 'memory', 'learning', 'intelligence') são vocabulário
+    técnico literal e figuração antropomórfica ao mesmo tempo. Camada manual de
+    desambiguação obrigatória: bruto vs. figurativo. Atenção analítica máxima."
+
+extrativa:
+  termos: ["mine", "mining", "extract", "extraction", "raw", "refine", "refined",
+           "harvest", "scrape", "scraping", "dig", "excavate", "extractive", "ore",
+           "quarry", "drill", "resource", "deposit"]
+  nota: "Registro mineralógico-extrativo, ressonante com Crawford (2021) sobre as
+    cadeias materiais da computação. 'data mining' é termo técnico consolidado:
+    rastrear se a metáfora extrativa é tematizada ou naturalizada."
+
+caixa:
+  termos: ["black box", "black-box", "blackbox", "container", "containerize",
+           "encapsulate", "encapsulation", "hidden layer", "latent space", "opaque",
+           "opacity", "transparent", "transparency", "interpretable", "explainable",
+           "wrapper", "sandbox"]
+  nota: "Registro caixa/contêiner. 'black box' e 'latent space' são técnico-literais
+    e figurativos; o eixo opacidade/transparência organiza boa parte da literatura
+    crítica sobre explicabilidade."

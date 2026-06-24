@@ -1,0 +1,42 @@
+# Configuração local
+.env
+
+# Exportações brutas das bases bibliográficas (WoS, Scopus): grandes e mutáveis.
+# Versionar apenas os metadados consolidados em corpus/metadata/.
+corpus/exports/*
+!corpus/exports/.gitkeep
+
+# Texto integral dos artigos: copyright. Fica fora do repositório.
+corpus/txt/*
+!corpus/txt/.gitkeep
+*.pdf
+*.PDF
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+
+# Caches Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Modelos spaCy: instalados como pacotes via pip, nada a versionar.
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Saídas intermediárias grandes (versionar só o que for citável)
+outputs/**/.cache/
