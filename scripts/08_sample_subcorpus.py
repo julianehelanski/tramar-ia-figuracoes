@@ -23,7 +23,6 @@ from __future__ import annotations
 import argparse
 
 import pandas as pd
-
 from _paths import ETAPA4, METADATA_CSV, SEED, matriz_lexical_path
 
 
@@ -38,9 +37,7 @@ def densidade_figurativa(matriz: pd.DataFrame, meta: pd.DataFrame) -> pd.DataFra
     base = matriz.copy()
     base["ocorrencias"] = base[familias].sum(axis=1)
 
-    palavras = (
-        meta.set_index("id")["abstract"].fillna("").str.split().map(len)
-    )
+    palavras = meta.set_index("id")["abstract"].fillna("").str.split().map(len)
     base = base.merge(palavras.rename("n_palavras"), on="id", how="left")
     base["n_palavras"] = base["n_palavras"].replace(0, pd.NA)
     base["densidade"] = (base["ocorrencias"] / base["n_palavras"]).fillna(0.0)
@@ -69,7 +66,7 @@ def selecionar(df: pd.DataFrame, alvo: int, estrato: str) -> pd.DataFrame:
     grupos = list(df.groupby(estrato, sort=False))
     n_total = len(df)
     escolhidos = []
-    for chave, grupo in grupos:
+    for _chave, grupo in grupos:
         cota = max(1, round(alvo * len(grupo) / n_total))
         escolhidos.append(grupo.head(cota))
 
@@ -79,14 +76,20 @@ def selecionar(df: pd.DataFrame, alvo: int, estrato: str) -> pd.DataFrame:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--alvo", type=int, default=40,
-                        help="tamanho do subcorpus (30 a 50 pela decisão 2.d)")
-    parser.add_argument("--estrato", default="categoria_wos",
-                        help="coluna de estrato disciplinar (padrão: categoria_wos)")
-    parser.add_argument("--bin-anos", type=int, default=3,
-                        help="tamanho da faixa de período, em anos")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--alvo", type=int, default=40, help="tamanho do subcorpus (30 a 50 pela decisão 2.d)"
+    )
+    parser.add_argument(
+        "--estrato",
+        default="categoria_wos",
+        help="coluna de estrato disciplinar (padrão: categoria_wos)",
+    )
+    parser.add_argument(
+        "--bin-anos", type=int, default=3, help="tamanho da faixa de período, em anos"
+    )
     args = parser.parse_args()
 
     meta = pd.read_csv(METADATA_CSV)
@@ -108,8 +111,16 @@ def main() -> None:
     meta_full["no_subcorpus"] = meta_full["id"].isin(sub["id"])
     meta_full.to_csv(METADATA_CSV, index=False)
 
-    cols = ["id", "titulo", "ano", "fonte", "estrato_amostral", "ocorrencias",
-            "densidade", "citacoes"]
+    cols = [
+        "id",
+        "titulo",
+        "ano",
+        "fonte",
+        "estrato_amostral",
+        "ocorrencias",
+        "densidade",
+        "citacoes",
+    ]
     cols = [c for c in cols if c in sub.columns]
     ETAPA4.mkdir(parents=True, exist_ok=True)
     saida = ETAPA4 / "subcorpus.csv"

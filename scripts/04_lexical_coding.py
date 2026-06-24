@@ -25,7 +25,6 @@ import re
 
 import pandas as pd
 import yaml
-
 from _paths import CATALOGO_PATH, ETAPA2, METADATA_CSV
 
 
@@ -88,8 +87,7 @@ def contar(texto: str, padrao: re.Pattern, exclusao: re.Pattern | None = None) -
     total = 0
     for m in padrao.finditer(texto):
         ini_palavra = len(re.findall(r"\S+", texto[: m.start()]))
-        janela = palavras[max(0, ini_palavra - JANELA_EXCLUSAO):
-                          ini_palavra + JANELA_EXCLUSAO + 1]
+        janela = palavras[max(0, ini_palavra - JANELA_EXCLUSAO) : ini_palavra + JANELA_EXCLUSAO + 1]
         if not exclusao.search(" ".join(janela)):
             total += 1
     return total

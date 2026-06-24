@@ -16,7 +16,6 @@ Uso:
 from __future__ import annotations
 
 import pandas as pd
-
 from _paths import METADATA_CSV
 
 ANO_MIN, ANO_MAX = 2015, 2026

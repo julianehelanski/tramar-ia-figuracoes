@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import networkx as nx
 import pandas as pd
-
 from _paths import ETAPA3, matriz_lexical_path
 
 
@@ -48,8 +47,10 @@ def main() -> None:
 
     g = construir_grafo(co)
     nx.write_graphml(g, ETAPA3 / "rede_familias.graphml")
-    print(f"Co-ocorrência salva; rede com {g.number_of_nodes()} nós e "
-          f"{g.number_of_edges()} arestas em {ETAPA3 / 'rede_familias.graphml'}")
+    print(
+        f"Co-ocorrência salva; rede com {g.number_of_nodes()} nós e "
+        f"{g.number_of_edges()} arestas em {ETAPA3 / 'rede_familias.graphml'}"
+    )
 
 
 if __name__ == "__main__":

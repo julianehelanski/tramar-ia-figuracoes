@@ -71,6 +71,19 @@
   de codificar corpus dessas línguas. Refinações anotadas: normalização de acentos
   e tratamento de flexões/plurais (decisões de calibração, seção 7 das decisões).
 
+## 2026-06-24 (automação de ambiente)
+
+- Hook de SessionStart em `.claude/hooks/session-start.sh`, registrado em
+  `.claude/settings.json`, para as sessões do Claude Code na web subirem com o
+  ambiente pronto: cria o venv, instala `requirements.txt` e as ferramentas de
+  desenvolvimento (black, ruff, pytest), e persiste o venv na sessão. Roda só em
+  sessão remota (`CLAUDE_CODE_REMOTE`), em modo síncrono.
+- Suíte de fumaça em `tests/` (catálogo com nove famílias, famílias a desambiguar,
+  seleção de termos por idioma, exclusão na contagem). Quatro testes, passando.
+- Lint do repositório alinhado a ruff e black (linha 100, config em pyproject):
+  imports reordenados, `zip(strict=True)` e ajustes menores. Pipeline revalidado de
+  ponta a ponta após a formatação.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

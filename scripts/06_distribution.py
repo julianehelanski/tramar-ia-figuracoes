@@ -16,7 +16,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
-
 from _paths import ETAPA3, FIGURAS_DIR, METADATA_CSV, matriz_lexical_path
 
 

@@ -14,7 +14,6 @@ import argparse
 import re
 
 import pandas as pd
-
 from _paths import ETAPA3, METADATA_CSV, SEED
 
 # Stopwords mínimas (en/pt/es) para o caminho LDA leve, sem dependência de spaCy.
@@ -45,9 +44,7 @@ def rodar_lda(textos: list[str], n_topicos: int) -> pd.DataFrame:
         from gensim import corpora
         from gensim.models import LdaModel
     except ImportError as erro:
-        raise SystemExit(
-            "LDA exige gensim (pip install gensim)."
-        ) from erro
+        raise SystemExit("LDA exige gensim (pip install gensim).") from erro
 
     docs = [tokenizar(t) for t in textos]
     docs = [d for d in docs if d]
@@ -58,16 +55,23 @@ def rodar_lda(textos: list[str], n_topicos: int) -> pd.DataFrame:
     dicionario.filter_extremes(no_below=2, no_above=0.5)
     corpus = [dicionario.doc2bow(d) for d in docs]
 
-    lda = LdaModel(corpus=corpus, id2word=dicionario, num_topics=n_topicos,
-                   random_state=SEED, passes=10, iterations=100)
+    lda = LdaModel(
+        corpus=corpus,
+        id2word=dicionario,
+        num_topics=n_topicos,
+        random_state=SEED,
+        passes=10,
+        iterations=100,
+    )
 
     linhas = []
-    for topico, termos in lda.show_topics(num_topics=n_topicos, num_words=12,
-                                          formatted=False):
-        linhas.append({
-            "topico": topico,
-            "termos": ", ".join(palavra for palavra, _ in termos),
-        })
+    for topico, termos in lda.show_topics(num_topics=n_topicos, num_words=12, formatted=False):
+        linhas.append(
+            {
+                "topico": topico,
+                "termos": ", ".join(palavra for palavra, _ in termos),
+            }
+        )
     tabela = pd.DataFrame(linhas)
     ETAPA3.mkdir(parents=True, exist_ok=True)
     saida = ETAPA3 / "topicos_lda.csv"

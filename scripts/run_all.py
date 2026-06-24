@@ -37,16 +37,35 @@ def rodar(script: str, *args: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--importar", nargs="+", metavar="FONTE:BASE", default=None,
-                        help="pares fonte:base para o passo 01 (ex.: wos.txt:wos)")
-    parser.add_argument("--desambiguar", action="store_true",
-                        help="aplicar a desambiguação manual (04b) antes de 05/06")
-    parser.add_argument("--topicos", type=int, metavar="N", default=None,
-                        help="rodar topic modeling LDA (07) com N tópicos")
-    parser.add_argument("--subcorpus", type=int, metavar="N", default=None,
-                        help="selecionar subcorpus de leitura (08) com N artigos")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--importar",
+        nargs="+",
+        metavar="FONTE:BASE",
+        default=None,
+        help="pares fonte:base para o passo 01 (ex.: wos.txt:wos)",
+    )
+    parser.add_argument(
+        "--desambiguar",
+        action="store_true",
+        help="aplicar a desambiguação manual (04b) antes de 05/06",
+    )
+    parser.add_argument(
+        "--topicos",
+        type=int,
+        metavar="N",
+        default=None,
+        help="rodar topic modeling LDA (07) com N tópicos",
+    )
+    parser.add_argument(
+        "--subcorpus",
+        type=int,
+        metavar="N",
+        default=None,
+        help="selecionar subcorpus de leitura (08) com N artigos",
+    )
     args = parser.parse_args()
 
     if args.importar:
@@ -70,8 +89,10 @@ def main() -> None:
     if args.subcorpus is not None:
         rodar("08_sample_subcorpus.py", "--alvo", str(args.subcorpus))
 
-    print("\nPipeline concluído. Saídas em outputs/. Registre as contagens PRISMA "
-          "em docs/prisma/fluxograma_prisma.md.")
+    print(
+        "\nPipeline concluído. Saídas em outputs/. Registre as contagens PRISMA "
+        "em docs/prisma/fluxograma_prisma.md."
+    )
 
 
 if __name__ == "__main__":

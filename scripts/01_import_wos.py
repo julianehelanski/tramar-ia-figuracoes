@@ -25,7 +25,6 @@ import re
 from pathlib import Path
 
 import pandas as pd
-
 from _paths import METADATA_CSV, exports_dir
 
 # Esquema-alvo (corpus/README.md). A ordem fixa estabiliza o CSV versionado.
@@ -81,20 +80,28 @@ def ler_wos_tab(fonte: Path) -> pd.DataFrame:
     Tags WoS usadas: DI (DOI), TI (título), AU (autores), PY (ano), SO (fonte),
     WC (categorias), DT (tipo), LA (idioma), TC (citações), AB (resumo).
     """
-    df = pd.read_csv(fonte, sep="\t", dtype=str, quoting=csv.QUOTE_NONE,
-                     on_bad_lines="skip", encoding="utf-8-sig").fillna("")
-    return pd.DataFrame({
-        "doi": df.get("DI", "").map(normalizar_doi),
-        "titulo": df.get("TI", ""),
-        "autores": df.get("AU", "").map(lambda s: str(s).replace("\n", "; ")),
-        "ano": df.get("PY", "").map(_to_int),
-        "fonte": df.get("SO", ""),
-        "categoria_wos": df.get("WC", ""),
-        "tipo_doc": df.get("DT", "").map(_titlecase_tipo),
-        "idioma": df.get("LA", "").map(normalizar_idioma),
-        "citacoes": df.get("TC", "").map(_to_int),
-        "abstract": df.get("AB", ""),
-    })
+    df = pd.read_csv(
+        fonte,
+        sep="\t",
+        dtype=str,
+        quoting=csv.QUOTE_NONE,
+        on_bad_lines="skip",
+        encoding="utf-8-sig",
+    ).fillna("")
+    return pd.DataFrame(
+        {
+            "doi": df.get("DI", "").map(normalizar_doi),
+            "titulo": df.get("TI", ""),
+            "autores": df.get("AU", "").map(lambda s: str(s).replace("\n", "; ")),
+            "ano": df.get("PY", "").map(_to_int),
+            "fonte": df.get("SO", ""),
+            "categoria_wos": df.get("WC", ""),
+            "tipo_doc": df.get("DT", "").map(_titlecase_tipo),
+            "idioma": df.get("LA", "").map(normalizar_idioma),
+            "citacoes": df.get("TC", "").map(_to_int),
+            "abstract": df.get("AB", ""),
+        }
+    )
 
 
 def ler_scopus_csv(fonte: Path) -> pd.DataFrame:
@@ -104,18 +111,20 @@ def ler_scopus_csv(fonte: Path) -> pd.DataFrame:
     Document Type, Language of Original Document, Cited by, Abstract.
     """
     df = pd.read_csv(fonte, dtype=str).fillna("")
-    return pd.DataFrame({
-        "doi": df.get("DOI", "").map(normalizar_doi),
-        "titulo": df.get("Title", ""),
-        "autores": df.get("Authors", ""),
-        "ano": df.get("Year", "").map(_to_int),
-        "fonte": df.get("Source title", ""),
-        "categoria_wos": "",  # Scopus não traz a categoria WoS; fica vazia.
-        "tipo_doc": df.get("Document Type", "").map(_titlecase_tipo),
-        "idioma": df.get("Language of Original Document", "").map(normalizar_idioma),
-        "citacoes": df.get("Cited by", "").map(_to_int),
-        "abstract": df.get("Abstract", ""),
-    })
+    return pd.DataFrame(
+        {
+            "doi": df.get("DOI", "").map(normalizar_doi),
+            "titulo": df.get("Title", ""),
+            "autores": df.get("Authors", ""),
+            "ano": df.get("Year", "").map(_to_int),
+            "fonte": df.get("Source title", ""),
+            "categoria_wos": "",  # Scopus não traz a categoria WoS; fica vazia.
+            "tipo_doc": df.get("Document Type", "").map(_titlecase_tipo),
+            "idioma": df.get("Language of Original Document", "").map(normalizar_idioma),
+            "citacoes": df.get("Cited by", "").map(_to_int),
+            "abstract": df.get("Abstract", ""),
+        }
+    )
 
 
 def ler_ris(fonte: Path) -> pd.DataFrame:
@@ -123,30 +132,35 @@ def ler_ris(fonte: Path) -> pd.DataFrame:
     try:
         import rispy
     except ImportError as erro:  # dependência opcional
-        raise SystemExit(
-            "Leitura de RIS exige `rispy` (pip install rispy)."
-        ) from erro
+        raise SystemExit("Leitura de RIS exige `rispy` (pip install rispy).") from erro
 
     with open(fonte, encoding="utf-8") as fh:
         entradas = rispy.load(fh)
 
-    tipo_ris = {"JOUR": "Article", "CONF": "Proceedings Paper", "CPAPER":
-                "Proceedings Paper", "RPRT": "Report", "CHAP": "Book Chapter"}
+    tipo_ris = {
+        "JOUR": "Article",
+        "CONF": "Proceedings Paper",
+        "CPAPER": "Proceedings Paper",
+        "RPRT": "Report",
+        "CHAP": "Book Chapter",
+    }
     linhas = []
     for e in entradas:
         autores = e.get("authors") or e.get("first_authors") or []
-        linhas.append({
-            "doi": normalizar_doi(e.get("doi", "")),
-            "titulo": e.get("title", "") or e.get("primary_title", ""),
-            "autores": "; ".join(autores),
-            "ano": _to_int(e.get("year", "") or e.get("publication_year", "")),
-            "fonte": e.get("journal_name", "") or e.get("secondary_title", ""),
-            "categoria_wos": "",
-            "tipo_doc": tipo_ris.get(e.get("type_of_reference", ""), "Article"),
-            "idioma": normalizar_idioma(e.get("language", "")),
-            "citacoes": 0,
-            "abstract": e.get("abstract", ""),
-        })
+        linhas.append(
+            {
+                "doi": normalizar_doi(e.get("doi", "")),
+                "titulo": e.get("title", "") or e.get("primary_title", ""),
+                "autores": "; ".join(autores),
+                "ano": _to_int(e.get("year", "") or e.get("publication_year", "")),
+                "fonte": e.get("journal_name", "") or e.get("secondary_title", ""),
+                "categoria_wos": "",
+                "tipo_doc": tipo_ris.get(e.get("type_of_reference", ""), "Article"),
+                "idioma": normalizar_idioma(e.get("language", "")),
+                "citacoes": 0,
+                "abstract": e.get("abstract", ""),
+            }
+        )
     return pd.DataFrame(linhas)
 
 
@@ -206,26 +220,34 @@ def _resolver(fonte: Path) -> Path:
     candidato = exports_dir() / fonte.name
     if candidato.exists():
         return candidato
-    raise FileNotFoundError(
-        f"Exportação não encontrada: {fonte} (nem em {exports_dir()})."
-    )
+    raise FileNotFoundError(f"Exportação não encontrada: {fonte} (nem em {exports_dir()}).")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--fonte", type=Path, action="append", required=True,
-                        help="arquivo exportado (repetível, pareado com --base)")
-    parser.add_argument("--base", action="append", required=True,
-                        choices=["wos", "scopus", "ris"],
-                        help="base/formato da fonte correspondente (repetível)")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--fonte",
+        type=Path,
+        action="append",
+        required=True,
+        help="arquivo exportado (repetível, pareado com --base)",
+    )
+    parser.add_argument(
+        "--base",
+        action="append",
+        required=True,
+        choices=["wos", "scopus", "ris"],
+        help="base/formato da fonte correspondente (repetível)",
+    )
     args = parser.parse_args()
 
     if len(args.fonte) != len(args.base):
         parser.error("número de --fonte e --base deve coincidir (pares ordenados).")
 
     frames = []
-    for fonte, base in zip(args.fonte, args.base):
+    for fonte, base in zip(args.fonte, args.base, strict=True):
         caminho = _resolver(fonte)
         df = importar(caminho, base)
         print(f"  {base}: {len(df)} registros de {caminho}")

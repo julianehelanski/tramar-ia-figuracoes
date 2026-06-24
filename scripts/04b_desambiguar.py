@@ -28,16 +28,15 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import re
-
-import pandas as pd
-import yaml
-
-from _paths import CATALOGO_PATH, ETAPA2, METADATA_CSV
 
 # Reaproveita a compilação de padrões e a janela de exclusão do passo lexical.
 import importlib.util
+import re
 from pathlib import Path
+
+import pandas as pd
+import yaml
+from _paths import CATALOGO_PATH, ETAPA2, METADATA_CSV
 
 _spec = importlib.util.spec_from_file_location(
     "_lexical", Path(__file__).resolve().parent / "04_lexical_coding.py"
@@ -83,27 +82,26 @@ def extrair_ocorrencias(df: pd.DataFrame, catalogo: dict, familia: str) -> pd.Da
     Escolhe a lista de termos pela coluna `idioma` de cada artigo (decisão 2.c).
     """
     meta = catalogo[familia]
-    padrao_por_idioma = {
-        idi: compilar_padroes(termos_da_familia(meta, idi)) for idi in IDIOMAS
-    }
+    padrao_por_idioma = {idi: compilar_padroes(termos_da_familia(meta, idi)) for idi in IDIOMAS}
     linhas = []
     for _, art in df.iterrows():
         texto = str(art.get("abstract", "") or "")
         idioma = str(art.get("idioma", "en") or "en").lower()
         padrao = padrao_por_idioma.get(idioma, padrao_por_idioma["en"])
         for m in padrao.finditer(texto):
-            linhas.append({
-                "id": art["id"],
-                "familia": familia,
-                "termo": m.group(0),
-                "contexto": _kwic(texto, m.start(), m.end()),
-                "categoria_sugerida": "",
-                "categoria_final": "",
-            })
+            linhas.append(
+                {
+                    "id": art["id"],
+                    "familia": familia,
+                    "termo": m.group(0),
+                    "contexto": _kwic(texto, m.start(), m.end()),
+                    "categoria_sugerida": "",
+                    "categoria_final": "",
+                }
+            )
     return pd.DataFrame(
         linhas,
-        columns=["id", "familia", "termo", "contexto", "categoria_sugerida",
-                 "categoria_final"],
+        columns=["id", "familia", "termo", "contexto", "categoria_sugerida", "categoria_final"],
     )
 
 
@@ -117,8 +115,10 @@ def gerar(df: pd.DataFrame, catalogo: dict) -> None:
         ocs = extrair_ocorrencias(df, catalogo, familia)
         destino.parent.mkdir(parents=True, exist_ok=True)
         ocs.to_csv(destino, index=False)
-        print(f"  {familia}: {len(ocs)} ocorrências em {destino.name} "
-              "(preencher coluna categoria_final: figurativa | tecnica).")
+        print(
+            f"  {familia}: {len(ocs)} ocorrências em {destino.name} "
+            "(preencher coluna categoria_final: figurativa | tecnica)."
+        )
 
 
 def aplicar(catalogo: dict) -> pd.DataFrame:
@@ -149,24 +149,28 @@ def aplicar(catalogo: dict) -> pd.DataFrame:
             )
         nao_classificadas = int((final == "").sum())
         if nao_classificadas:
-            print(f"  {familia}: {nao_classificadas} ocorrências sem classificação "
-                  "(excluídas da contagem refinada).")
+            print(
+                f"  {familia}: {nao_classificadas} ocorrências sem classificação "
+                "(excluídas da contagem refinada)."
+            )
 
         figurativas = ocs.loc[final == "figurativa", "id"].value_counts()
-        refinada[familia] = (
-            refinada["id"].map(figurativas).fillna(0).astype(int)
+        refinada[familia] = refinada["id"].map(figurativas).fillna(0).astype(int)
+        print(
+            f"  {familia}: {int(figurativas.sum())} ocorrências figurativas "
+            f"(bruta: {int(bruta[familia].sum())})."
         )
-        print(f"  {familia}: {int(figurativas.sum())} ocorrências figurativas "
-              f"(bruta: {int(bruta[familia].sum())}).")
 
     return refinada
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--gerar", action="store_true",
-                        help="gerar os CSV de classificação em branco")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--gerar", action="store_true", help="gerar os CSV de classificação em branco"
+    )
     args = parser.parse_args()
 
     catalogo = carregar_catalogo()
