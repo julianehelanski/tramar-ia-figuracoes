@@ -2,14 +2,23 @@
 #
 # Hierarquia: familia -> metadados.
 # Metadados por família:
-#   termos      lista de variantes (case-insensitive, word-boundary; espaços
-#               tornam-se \s+ no script de codificação).
+#   termos      lista de variantes em inglês (case-insensitive, word-boundary;
+#               espaços tornam-se \s+ no script de codificação).
+#   termos_pt   (rascunho) variantes em português, usadas quando o artigo está em
+#               pt. RASCUNHO v0: traduções a validar por Juliane antes de codificar
+#               qualquer corpus pt (decisão 2.c, idioma en+pt+es de 24/06/2026).
+#   termos_es   (rascunho) variantes em espanhol, mesma ressalva de validação.
 #   exclusoes   (opcional) expressões que, no trecho central casado ou nas 5
-#               palavras adjacentes, descartam a ocorrência como ruído.
+#               palavras adjacentes, descartam a ocorrência como ruído. Variantes
+#               por língua em exclusoes_pt e exclusoes_es.
 #   desambiguar (opcional, bool) marca família cujos termos exigem camada manual
 #               de classificação (bruto vs. figurativo) em CSV auditável, no molde
 #               da desambiguação war/wars do projeto Latour.
 #   nota        nota analítica curta, usada nos relatórios.
+#
+# O script de codificação escolhe a lista de termos pela coluna `idioma` do artigo
+# (en -> termos, pt -> termos_pt, es -> termos_es), com recuo para `termos` quando
+# a lista da língua falta.
 #
 # Fonte da verdade para os scripts. A justificativa argumentativa fica em
 # docs/decisoes_metodologicas.md. Catálogo aberto: revisado e expandido durante a
@@ -21,17 +30,39 @@ textil:
            "threads", "knot", "knots", "fiber", "fibre", "mesh", "lace", "braid",
            "tapestry", "quilt", "crazy quilt", "patchwork", "seam", "seams",
            "stitch", "loom", "yarn", "string figure", "string figures"]
+  termos_pt: ["tecer", "tece", "tecido", "tecida", "trama", "tramar", "urdir",
+              "urdidura", "rede", "redes", "fio", "fios", "nó", "nós", "fibra",
+              "fibras", "malha", "renda", "trança", "tapeçaria", "colcha", "retalho",
+              "costura", "costurar", "ponto", "tear", "novelo", "figura de barbante"]
+  termos_es: ["tejer", "teje", "tejido", "tejida", "trama", "urdir", "urdimbre",
+              "red", "redes", "hilo", "hilos", "nudo", "nudos", "fibra", "fibras",
+              "malla", "encaje", "trenza", "tapiz", "colcha", "retazo", "costura",
+              "puntada", "telar", "hebra", "figura de hilo"]
   exclusoes: ["neural network", "neural networks", "deep network", "convolutional network"]
-  nota: "Família-hipótese do projeto. 'network' é o termo de fronteira: têxtil em
-    Haraway, técnico-literal em IA. A exclusão remove os usos compostos com
-    'neural/deep/convolutional'; usos isolados de 'network' exigem leitura. Cruzar
-    com o catálogo têxtil de analise-figuracoes-latour."
+  exclusoes_pt: ["rede neural", "redes neurais", "rede neural profunda",
+                 "rede convolucional"]
+  exclusoes_es: ["red neuronal", "redes neuronales", "red neuronal profunda",
+                 "red convolucional"]
+  nota: "Família-hipótese do projeto. 'network'/'rede'/'red' é o termo de fronteira:
+    têxtil em Haraway, técnico-literal em IA. A exclusão remove os usos compostos
+    com 'neural/deep/convolutional'; usos isolados exigem leitura. Cruzar com o
+    catálogo têxtil de analise-figuracoes-latour."
 
 biologica:
   termos: ["neural", "brain", "brains", "learning", "learn", "organism", "evolve",
            "evolution", "mutation", "ecosystem", "growth", "grow", "generation",
            "neuron", "neurons", "synapse", "synaptic", "genetic", "dna", "cell",
            "organic", "adapt", "adaptation", "natural selection"]
+  termos_pt: ["neural", "cérebro", "cérebros", "aprendizado", "aprender", "aprende",
+              "organismo", "evoluir", "evolução", "mutação", "ecossistema",
+              "crescimento", "crescer", "geração", "neurônio", "neurônios", "sinapse",
+              "sináptico", "genético", "dna", "célula", "orgânico", "adaptar",
+              "adaptação", "seleção natural"]
+  termos_es: ["neural", "cerebro", "cerebros", "aprendizaje", "aprender", "aprende",
+              "organismo", "evolucionar", "evolución", "mutación", "ecosistema",
+              "crecimiento", "crecer", "generación", "neurona", "neuronas", "sinapsis",
+              "sináptico", "genético", "adn", "célula", "orgánico", "adaptar",
+              "adaptación", "selección natural"]
   nota: "Registro biológico-orgânico. 'neural' e 'learning' são também
     técnico-literais; ver família antropomórfica e a salvaguarda de homonímia."
 
@@ -39,6 +70,12 @@ mecanica:
   termos: ["machine", "machinery", "engine", "system", "architecture", "pipeline",
            "infrastructure", "framework", "scaffold", "scaffolding", "module",
            "mechanism", "gear", "cog", "wheel", "lever", "apparatus"]
+  termos_pt: ["máquina", "maquinaria", "motor", "sistema", "arquitetura", "pipeline",
+              "infraestrutura", "framework", "andaime", "módulo", "mecanismo",
+              "engrenagem", "roda", "alavanca", "aparato", "aparelho"]
+  termos_es: ["máquina", "maquinaria", "motor", "sistema", "arquitectura", "pipeline",
+              "infraestructura", "framework", "andamiaje", "módulo", "mecanismo",
+              "engranaje", "rueda", "palanca", "aparato", "aparejo"]
   nota: "Registro mecânico-industrial. 'pipeline' é compartilhado com a família
     oceânica/líquida; classificar pelo contexto."
 
@@ -47,23 +84,45 @@ militar:
            "defense", "defence", "attack", "adversarial", "strategy", "strategic",
            "operation", "surveillance", "command", "arms race", "battlefield",
            "frontier", "campaign", "threat", "offensive"]
+  termos_pt: ["implantar", "implantação", "alvo", "mira", "mirar", "arma", "armar",
+              "armamento", "defesa", "ataque", "atacar", "adversarial", "estratégia",
+              "estratégico", "operação", "vigilância", "comando", "corrida armamentista",
+              "campo de batalha", "fronteira", "campanha", "ameaça", "ofensiva"]
+  termos_es: ["desplegar", "despliegue", "blanco", "objetivo", "arma", "armamento",
+              "defensa", "ataque", "atacar", "adversarial", "estrategia", "estratégico",
+              "operación", "vigilancia", "comando", "carrera armamentista",
+              "campo de batalla", "frontera", "campaña", "amenaza", "ofensiva"]
   desambiguar: true
   nota: "Registro militar-industrial, ressonante com o vocabulário latouriano.
-    'deploy', 'target' e 'operation' têm uso técnico trivial em engenharia de
-    software; exigem desambiguação manual (descritivo-técnico vs. figurativo)."
+    'deploy'/'implantar', 'target'/'alvo' e 'operation'/'operação' têm uso técnico
+    trivial em engenharia de software; exigem desambiguação manual (descritivo-técnico
+    vs. figurativo)."
 
 oceanica:
   termos: ["stream", "streaming", "flow", "flows", "dive", "deep", "depth", "ocean",
            "current", "tide", "fluid", "fluidity", "immersion", "immerse", "pipeline",
            "wave", "waves", "surface", "drift", "flood", "torrent"]
-  nota: "Registro oceânico-líquido. 'deep' é o termo de fronteira: literal em 'deep
-    learning', figurativo em metáforas de profundidade. Desambiguar 'deep' quando
+  termos_pt: ["fluxo", "fluxos", "fluir", "mergulho", "mergulhar", "profundo",
+              "profundidade", "oceano", "corrente", "maré", "fluido", "fluidez",
+              "imersão", "imergir", "pipeline", "onda", "ondas", "superfície", "deriva",
+              "inundação", "torrente"]
+  termos_es: ["flujo", "flujos", "fluir", "inmersión", "sumergir", "profundo",
+              "profundidad", "océano", "corriente", "marea", "fluido", "fluidez",
+              "pipeline", "ola", "olas", "superficie", "deriva", "inundación", "torrente"]
+  nota: "Registro oceânico-líquido. 'deep'/'profundo' é o termo de fronteira: literal
+    em 'deep learning', figurativo em metáforas de profundidade. Desambiguar quando
     isolado de 'learning/network'."
 
 religiosa:
   termos: ["oracle", "prophet", "prophecy", "revelation", "faith", "magic", "magical",
            "miracle", "soul", "spirit", "conjure", "summon", "divine", "sacred",
            "ritual", "alchemy", "alchemist", "god", "godlike", "omniscient", "sentient"]
+  termos_pt: ["oráculo", "profeta", "profecia", "revelação", "fé", "magia", "mágico",
+              "milagre", "alma", "espírito", "conjurar", "invocar", "divino", "sagrado",
+              "ritual", "alquimia", "alquimista", "deus", "onisciente", "senciente"]
+  termos_es: ["oráculo", "profeta", "profecía", "revelación", "fe", "magia", "mágico",
+              "milagro", "alma", "espíritu", "conjurar", "invocar", "divino", "sagrado",
+              "ritual", "alquimia", "alquimista", "dios", "omnisciente", "senciente"]
   nota: "Registro religioso-místico. Frequente em literatura crítica e jornalística
     sobre IA; rastrear se aparece em registro técnico ou só em registro crítico."
 
@@ -73,25 +132,50 @@ antropomorfica:
            "reasoning", "think", "thinking", "know", "knowledge", "attention",
            "memory", "perceive", "perception", "believe", "belief", "aware",
            "awareness", "imagine", "creative", "agent", "agentic"]
+  termos_pt: ["inteligente", "inteligência", "entender", "entendimento", "compreender",
+              "compreensão", "aprender", "decidir", "decisão", "alucinar", "alucinação",
+              "sonhar", "sonho", "raciocinar", "raciocínio", "pensar", "pensamento",
+              "saber", "conhecimento", "atenção", "memória", "perceber", "percepção",
+              "acreditar", "crença", "consciente", "consciência", "imaginar", "criativo",
+              "agente"]
+  termos_es: ["inteligente", "inteligencia", "entender", "comprensión", "comprender",
+              "aprender", "decidir", "decisión", "alucinar", "alucinación", "soñar",
+              "sueño", "razonar", "razonamiento", "pensar", "pensamiento", "saber",
+              "conocimiento", "atención", "memoria", "percibir", "percepción", "creer",
+              "creencia", "consciente", "conciencia", "imaginar", "creativo", "agente"]
   desambiguar: true
   nota: "Registro dominante do campo e raramente assinalado como figurativo. Vários
-    termos ('attention', 'memory', 'learning', 'intelligence') são vocabulário
-    técnico literal e figuração antropomórfica ao mesmo tempo. Camada manual de
-    desambiguação obrigatória: bruto vs. figurativo. Atenção analítica máxima."
+    termos ('attention'/'atenção', 'memory'/'memória', 'intelligence'/'inteligência')
+    são vocabulário técnico literal e figuração antropomórfica ao mesmo tempo. Camada
+    manual de desambiguação obrigatória: bruto vs. figurativo. Atenção analítica máxima."
 
 extrativa:
   termos: ["mine", "mining", "extract", "extraction", "raw", "refine", "refined",
            "harvest", "scrape", "scraping", "dig", "excavate", "extractive", "ore",
            "quarry", "drill", "resource", "deposit"]
+  termos_pt: ["minerar", "mineração", "extrair", "extração", "bruto", "refinar",
+              "refinado", "colher", "colheita", "raspar", "raspagem", "cavar",
+              "escavar", "extrativo", "minério", "pedreira", "perfurar", "recurso",
+              "depósito"]
+  termos_es: ["minar", "minería", "extraer", "extracción", "crudo", "refinar",
+              "refinado", "cosechar", "cosecha", "raspar", "raspado", "cavar",
+              "excavar", "extractivo", "mineral", "cantera", "perforar", "recurso",
+              "depósito"]
   nota: "Registro mineralógico-extrativo, ressonante com Crawford (2021) sobre as
-    cadeias materiais da computação. 'data mining' é termo técnico consolidado:
-    rastrear se a metáfora extrativa é tematizada ou naturalizada."
+    cadeias materiais da computação. 'data mining'/'mineração de dados' é termo
+    técnico consolidado: rastrear se a metáfora extrativa é tematizada ou naturalizada."
 
 caixa:
   termos: ["black box", "black-box", "blackbox", "container", "containerize",
            "encapsulate", "encapsulation", "hidden layer", "latent space", "opaque",
            "opacity", "transparent", "transparency", "interpretable", "explainable",
            "wrapper", "sandbox"]
-  nota: "Registro caixa/contêiner. 'black box' e 'latent space' são técnico-literais
-    e figurativos; o eixo opacidade/transparência organiza boa parte da literatura
-    crítica sobre explicabilidade."
+  termos_pt: ["caixa preta", "caixa-preta", "contêiner", "conteiner", "encapsular",
+              "encapsulamento", "camada oculta", "espaço latente", "opaco", "opacidade",
+              "transparente", "transparência", "interpretável", "explicável", "invólucro"]
+  termos_es: ["caja negra", "contenedor", "encapsular", "encapsulamiento", "capa oculta",
+              "espacio latente", "opaco", "opacidad", "transparente", "transparencia",
+              "interpretable", "explicable", "envoltorio"]
+  nota: "Registro caixa/contêiner. 'black box'/'caixa preta' e 'latent space'/'espaço
+    latente' são técnico-literais e figurativos; o eixo opacidade/transparência
+    organiza boa parte da literatura crítica sobre explicabilidade."

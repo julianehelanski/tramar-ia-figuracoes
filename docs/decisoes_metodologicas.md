@@ -54,10 +54,14 @@ amostragem). A híbrida contrasta as duas, ao custo de dobrar a constituição d
 corpus e manter dois fluxos PRISMA. A coerência com o objetivo geral (contrastar
 o vocabulário técnico com o crítico) aponta para a híbrida.
 
-Estado: **pendente**. A *query* v1 (`corpus/queries/wos_query_v1.txt`) é a
-restritiva refinada. Decidir se a ampla entra já na Etapa 1 ou fica para a versão
-artigo. Sugestão de trabalho: começar pela restritiva, rodar busca-piloto, decidir
-a ampla à luz do volume retornado.
+Estado: **resolvido em 24/06/2026** pela híbrida faseada. Começo pela restritiva,
+que já está pronta em `corpus/queries/wos_query_v1.txt`, e rodo a busca-piloto para
+dimensionar o retorno. A ampla entra em seguida, com amostragem proporcional ao
+volume, e mantenho dois fluxos PRISMA quando ela entrar. Condiciono a ampla ao que
+a piloto mostrar: se o corpus restritivo já sustentar o contraste técnico contra
+crítico com densidade suficiente, registro a ampla como camada posterior; se o
+metalinguístico vier escasso, antecipo a ampla. A decisão de antecipar ou adiar
+fica para depois da piloto, como nova entrada datada.
 
 ### 2.c. Bases e idioma
 
@@ -66,8 +70,17 @@ inclui português e espanhol ou se pt/es ficam como camada de comparação poste
 A assimetria anglófona deve ser explicitada na redação de todo modo (seção 6 do
 roteiro).
 
-Estado: **pendente**. A *query* v1 inclui `LA=(English OR Portuguese OR Spanish)`
-como ponto de partida; restringir a inglês é um ajuste de uma linha.
+Estado: **resolvido em 24/06/2026**. Sobre as bases, adoto WoS e Scopus na Etapa 1.
+Duas bases indexadas reduzem o viés de fonte única, e o pipeline já importa e
+deduplica as duas por DOI. O arXiv fica condicionado ao gatilho da decisão 2.a:
+entra como base paralela se a busca-piloto revelar lacuna de cobertura no polo
+técnico. Sobre o idioma, incluo inglês, português e espanhol desde a Etapa 1, com a
+`query` mantendo `LA=(English OR Portuguese OR Spanish)`. Essa escolha tem uma
+consequência que operacionalizo na seção 7: o catálogo de famílias, antes só em
+inglês, ganhou listas de termos em pt e es, e a codificação passou a escolher a
+lista pela língua do artigo. As listas pt/es são rascunho a validar antes de
+codificar qualquer corpus dessas línguas. A assimetria anglófona da literatura fica
+explicitada na redação de todo modo.
 
 ### 2.d. Amostragem do subcorpus para a leitura próxima
 
@@ -136,3 +149,27 @@ seed fixo `seed=42` governa o desempate. A definição operacional do polo técn
 contra o crítico fica como dependência aberta: por ora o estrato disciplinar usa a
 categoria WoS; quando eu fixar o indicador de polo, ele entra como coluna de
 estratificação adicional, registrada como nova decisão.
+
+## 7. Catálogo multilíngue (24/06/2026)
+
+A decisão 2.c de incluir português e espanhol na Etapa 1 obriga o catálogo a deixar
+de ser monolíngue. Estendi `campos_lexicais/catalogo_familias.yaml` com listas
+`termos_pt` e `termos_es` por família, e exclusões por língua (`exclusoes_pt`,
+`exclusoes_es`). A codificação (`04_lexical_coding.py`) e a desambiguação
+(`04b_desambiguar.py`) escolhem a lista pela coluna `idioma` do artigo, com recuo
+para o inglês quando a lista da língua falta.
+
+Trato as listas pt e es como **rascunho v0 a validar**. Eu mesma reviso as
+traduções das famílias antes de codificar qualquer corpus pt ou es, porque a
+correspondência figurativa entre línguas pede julgamento que a tradução automática
+não resolve: o têxtil de Haraway em português, o vocabulário extrativo de Crawford
+em espanhol, a fronteira de `rede`/`red` contra `network`. Enquanto eu não validar,
+a contagem desses corpora permanece provisória.
+
+Duas refinações ficam registradas para a calibração. A primeira: a correspondência
+hoje distingue acento, então `máquina` com acento e `maquina` sem acento contam como
+formas diferentes; decido na calibração se normalizo acentos antes da contagem ou se
+exijo entrada acentuada. A segunda: a correspondência casa formas exatas, então
+flexões e plurais (`tejemos` ao lado de `tejer`, `aprende` ao lado de `aprender`)
+escapam; a mesma decisão entre ampliar as listas ou lematizar, já anotada para o
+inglês, vale para pt e es.

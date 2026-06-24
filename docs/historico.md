@@ -55,6 +55,22 @@
 - Dependência aberta registrada: definição operacional do polo técnico contra o
   crítico, que entrará como estrato adicional na amostragem quando fixada.
 
+## 2026-06-24 (decisões 2.b e 2.c resolvidas)
+
+- Decisão 2.b, estratégia de query: resolvida pela híbrida faseada. Começo pela
+  restritiva (query v1) com busca-piloto de dimensionamento; a ampla entra depois,
+  com amostragem, condicionada ao volume.
+- Decisão 2.c, bases: WoS e Scopus na Etapa 1 (o pipeline já deduplica por DOI);
+  arXiv condicionado ao gatilho da 2.a.
+- Decisão 2.c, idioma: inglês, português e espanhol desde a Etapa 1.
+- Consequência operacional: catálogo estendido com `termos_pt`/`termos_es` e
+  exclusões por língua; `04_lexical_coding.py` e `04b_desambiguar.py` passaram a
+  escolher a lista pela coluna `idioma`, com recuo para o inglês. Mecanismo testado
+  sobre exportação sintética pt/es.
+- Pendência registrada: as listas pt/es são rascunho v0 a validar por Juliane antes
+  de codificar corpus dessas línguas. Refinações anotadas: normalização de acentos
+  e tratamento de flexões/plurais (decisões de calibração, seção 7 das decisões).
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

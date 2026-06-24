@@ -45,6 +45,8 @@ _spec = importlib.util.spec_from_file_location(
 _lex = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_lex)
 compilar_padroes = _lex.compilar_padroes
+termos_da_familia = _lex.termos_da_familia
+IDIOMAS = _lex.IDIOMAS
 
 # Janela KWIC (palavras de cada lado) registrada no contexto de classificação.
 JANELA_KWIC = 8
@@ -76,11 +78,19 @@ def _kwic(texto: str, ini: int, fim: int) -> str:
 
 
 def extrair_ocorrencias(df: pd.DataFrame, catalogo: dict, familia: str) -> pd.DataFrame:
-    """Tabela de ocorrências (uma linha por casamento) com contexto KWIC."""
-    padrao = compilar_padroes(catalogo[familia]["termos"])
+    """Tabela de ocorrências (uma linha por casamento) com contexto KWIC.
+
+    Escolhe a lista de termos pela coluna `idioma` de cada artigo (decisão 2.c).
+    """
+    meta = catalogo[familia]
+    padrao_por_idioma = {
+        idi: compilar_padroes(termos_da_familia(meta, idi)) for idi in IDIOMAS
+    }
     linhas = []
     for _, art in df.iterrows():
         texto = str(art.get("abstract", "") or "")
+        idioma = str(art.get("idioma", "en") or "en").lower()
+        padrao = padrao_por_idioma.get(idioma, padrao_por_idioma["en"])
         for m in padrao.finditer(texto):
             linhas.append({
                 "id": art["id"],
