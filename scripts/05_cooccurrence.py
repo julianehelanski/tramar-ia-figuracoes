@@ -13,7 +13,7 @@ from __future__ import annotations
 import networkx as nx
 import pandas as pd
 
-from _paths import ETAPA2, ETAPA3
+from _paths import ETAPA3, matriz_lexical_path
 
 
 def matriz_cooccorrencia(matriz: pd.DataFrame) -> pd.DataFrame:
@@ -39,7 +39,9 @@ def construir_grafo(co: pd.DataFrame) -> nx.Graph:
 
 
 def main() -> None:
-    matriz = pd.read_csv(ETAPA2 / "codificacao_lexical.csv")
+    fonte = matriz_lexical_path()
+    print(f"Lendo matriz lexical: {fonte.name}")
+    matriz = pd.read_csv(fonte)
     co = matriz_cooccorrencia(matriz)
     ETAPA3.mkdir(parents=True, exist_ok=True)
     co.to_csv(ETAPA3 / "cooccorrencia_familias.csv")

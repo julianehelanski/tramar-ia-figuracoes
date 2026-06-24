@@ -36,21 +36,53 @@ def compilar_padroes(termos: list[str]) -> re.Pattern:
     return re.compile(r"\b(?:" + "|".join(partes) + r")\b", re.IGNORECASE)
 
 
-def contar(texto: str, padrao: re.Pattern) -> int:
-    """Conta ocorrências de um padrão num texto."""
-    return len(padrao.findall(str(texto)))
+# Janela de contexto (palavras de cada lado) para testar as exclusões do catálogo.
+JANELA_EXCLUSAO = 5
+
+
+def contar(texto: str, padrao: re.Pattern, exclusao: re.Pattern | None = None) -> int:
+    """Conta ocorrências de um padrão, descartando as que casam uma exclusão.
+
+    Uma ocorrência é descartada quando o padrão de exclusão casa no trecho central
+    ou nas `JANELA_EXCLUSAO` palavras adjacentes de cada lado, conforme a semântica
+    documentada no catálogo (ex.: 'network' precedido de 'neural').
+    """
+    texto = str(texto)
+    if exclusao is None:
+        return len(padrao.findall(texto))
+
+    palavras = re.findall(r"\S+", texto)
+    total = 0
+    for m in padrao.finditer(texto):
+        ini_palavra = len(re.findall(r"\S+", texto[: m.start()]))
+        janela = palavras[max(0, ini_palavra - JANELA_EXCLUSAO):
+                          ini_palavra + JANELA_EXCLUSAO + 1]
+        if not exclusao.search(" ".join(janela)):
+            total += 1
+    return total
 
 
 def codificar(df: pd.DataFrame, catalogo: dict) -> pd.DataFrame:
-    """Gera a matriz artigo × família (contagem bruta sobre o resumo)."""
+    """Gera a matriz artigo × família (contagem bruta sobre o resumo).
+
+    Aplica o campo `exclusoes` do catálogo quando presente, removendo ocorrências
+    cujo contexto casa uma expressão de exclusão.
+    """
     padroes = {
         fam: compilar_padroes(meta["termos"]) for fam, meta in catalogo.items()
+    }
+    exclusoes = {
+        fam: compilar_padroes(meta["exclusoes"])
+        for fam, meta in catalogo.items()
+        if meta.get("exclusoes")
     }
     linhas = []
     for _, art in df.iterrows():
         texto = art.get("abstract", "")
         linha = {"id": art["id"]}
-        linha.update({fam: contar(texto, p) for fam, p in padroes.items()})
+        linha.update({
+            fam: contar(texto, p, exclusoes.get(fam)) for fam, p in padroes.items()
+        })
         linhas.append(linha)
     return pd.DataFrame(linhas)
 

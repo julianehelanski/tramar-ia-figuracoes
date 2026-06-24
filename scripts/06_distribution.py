@@ -17,7 +17,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from _paths import ETAPA2, ETAPA3, FIGURAS_DIR, METADATA_CSV
+from _paths import ETAPA3, FIGURAS_DIR, METADATA_CSV, matriz_lexical_path
 
 
 def juntar(matriz: pd.DataFrame, meta: pd.DataFrame) -> pd.DataFrame:
@@ -37,7 +37,9 @@ def por_disciplina(df: pd.DataFrame, familias: list[str]) -> pd.DataFrame:
 
 
 def main() -> None:
-    matriz = pd.read_csv(ETAPA2 / "codificacao_lexical.csv")
+    fonte = matriz_lexical_path()
+    print(f"Lendo matriz lexical: {fonte.name}")
+    matriz = pd.read_csv(fonte)
     meta = pd.read_csv(METADATA_CSV)
     familias = [c for c in matriz.columns if c != "id"]
 

@@ -51,3 +51,13 @@ def fulltext_dir() -> Path | None:
     """
     caminho = os.getenv("CORPUS_FULLTEXT_PATH")
     return Path(caminho) if caminho else None
+
+
+def matriz_lexical_path() -> Path:
+    """Matriz de codificação lexical a usar a jusante (Etapas 3 em diante).
+
+    Prefere a versão refinada por desambiguação (`04b_desambiguar.py`) quando ela
+    existe; caso contrário, usa a bruta de `04_lexical_coding.py`.
+    """
+    refinada = ETAPA2 / "codificacao_lexical_refinada.csv"
+    return refinada if refinada.exists() else ETAPA2 / "codificacao_lexical.csv"
