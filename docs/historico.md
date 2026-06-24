@@ -42,6 +42,19 @@
   Decidir, na calibração, se acrescento variantes flexionadas ao catálogo ou se
   introduzo lematização antes da contagem.
 
+## 2026-06-24 (decisões 2.a e 2.d resolvidas)
+
+- Decisão 2.a, anais de conferência: resolvida pela opção (i), incluir anais
+  indexados com revisão por pares. `Proceedings Paper` permanece na *query* e em
+  `03_apply_criteria.py`. arXiv fica como complemento condicionado à busca-piloto.
+- Decisão 2.d, amostragem do subcorpus: resolvida pela amostragem teórica por
+  densidade figurativa, estratificada por período e estrato disciplinar, com
+  citação como descritor secundário. Operacionalizada em
+  `scripts/08_sample_subcorpus.py` (seed=42), testada sobre exportação sintética.
+- Detalhe das duas em `docs/decisoes_metodologicas.md` (seções 2.a, 2.d e 6).
+- Dependência aberta registrada: definição operacional do polo técnico contra o
+  crítico, que entrará como estrato adicional na amostragem quando fixada.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

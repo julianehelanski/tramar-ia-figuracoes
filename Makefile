@@ -5,7 +5,7 @@
 PY := python
 VENV := .venv
 
-.PHONY: help setup import dedup criteria coding refine-gen refine distribution topics all clean
+.PHONY: help setup import dedup criteria coding refine-gen refine distribution topics subcorpus all clean
 
 help:
 	@echo "Alvos:"
@@ -17,7 +17,8 @@ help:
 	@echo "  refine-gen   04b_desambiguar.py --gerar (CSV em branco para classificar)"
 	@echo "  refine       04b_desambiguar.py (aplica os CSV já classificados)"
 	@echo "  distribution 05_cooccurrence.py e 06_distribution.py"
-	@echo "  topics       07_topic_model.py (LDA; N=make topics N=15)"
+	@echo "  topics       07_topic_model.py (LDA; make topics N=15)"
+	@echo "  subcorpus    08_sample_subcorpus.py (amostragem 2.d; make subcorpus ALVO=40)"
 	@echo "  all          dedup -> criteria -> coding -> distribution"
 
 setup:
@@ -50,6 +51,10 @@ distribution:
 N ?= 15
 topics:
 	$(PY) scripts/07_topic_model.py --metodo lda --n-topicos $(N)
+
+ALVO ?= 40
+subcorpus:
+	$(PY) scripts/08_sample_subcorpus.py --alvo $(ALVO)
 
 all:
 	$(PY) scripts/run_all.py

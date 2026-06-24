@@ -24,7 +24,8 @@ AND LA=(English OR Portuguese OR Spanish)
 --------------------------------------------------------------------------------
 
 Ganchos de decisão (ver docs/decisoes_metodologicas.md seção 2):
-- DT inclui "Proceedings Paper" (decisão 2.a, incluir anais). Remover para excluir.
+- DT inclui "Proceedings Paper" (decisão 2.a resolvida em 24/06/2026: incluir
+  anais indexados). Reabrir a exclusão exige nova decisão registrada.
 - LA inclui Portuguese e Spanish (decisão 2.c). Restringir a English se for o caso.
 
 ESTRATÉGIA AMPLA (uso implícito): remover o segundo bloco AND TS=(metaphor* ...).

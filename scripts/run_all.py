@@ -45,6 +45,8 @@ def main() -> None:
                         help="aplicar a desambiguação manual (04b) antes de 05/06")
     parser.add_argument("--topicos", type=int, metavar="N", default=None,
                         help="rodar topic modeling LDA (07) com N tópicos")
+    parser.add_argument("--subcorpus", type=int, metavar="N", default=None,
+                        help="selecionar subcorpus de leitura (08) com N artigos")
     args = parser.parse_args()
 
     if args.importar:
@@ -65,6 +67,8 @@ def main() -> None:
     rodar("06_distribution.py")
     if args.topicos is not None:
         rodar("07_topic_model.py", "--metodo", "lda", "--n-topicos", str(args.topicos))
+    if args.subcorpus is not None:
+        rodar("08_sample_subcorpus.py", "--alvo", str(args.subcorpus))
 
     print("\nPipeline concluído. Saídas em outputs/. Registre as contagens PRISMA "
           "em docs/prisma/fluxograma_prisma.md.")

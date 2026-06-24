@@ -35,8 +35,16 @@ pares (a própria seção 4.1 admite a exceção); (ii) manter a exclusão e ass
 WoS recorta o campo pelo polo formal-periódico, usando arXiv/ACM como base
 paralela para o polo técnico.
 
-Estado: **pendente**. A *query* v1 inclui `"Proceedings Paper"` em `DT` como gancho
-da opção (i); remover esse termo realiza a opção (ii).
+Estado: **resolvido em 24/06/2026** pela opção (i). Decido incluir anais indexados
+com revisão por pares, mantendo `"Proceedings Paper"` em `DT` na *query* e o tipo
+correspondente entre os incluídos em `03_apply_criteria.py`. Sustento a escolha em
+três razões: preservo um fluxo PRISMA único, evito a heterogeneidade de qualidade
+que o preprint introduziria, e capturo o polo técnico dentro da própria base
+sistemática, já que a WoS indexa as conferências de referência (FAccT, NeurIPS,
+ACL, AAAI) pelo Conference Proceedings Citation Index. Deixo o arXiv como
+complemento condicionado: se a busca-piloto mostrar lacuna de cobertura no polo
+técnico, retomo a opção (ii) como camada paralela, registrada como nova decisão.
+Detalhe operacional em `docs/decisoes_metodologicas.md` (seção 6, abaixo).
 
 ### 2.b. Estratégia de query: restritiva, ampla ou híbrida
 
@@ -61,13 +69,23 @@ roteiro).
 Estado: **pendente**. A *query* v1 inclui `LA=(English OR Portuguese OR Spanish)`
 como ponto de partida; restringir a inglês é um ajuste de uma linha.
 
-### 2.d. Amostragem por citação
+### 2.d. Amostragem do subcorpus para a leitura próxima
 
 A seleção do quintil superior por citações enviesa para artigos antigos (mais
-tempo de acúmulo) e contra os de 2024 a 2026. Se adotada, combinar com a
-amostragem temporal prevista para corrigir o viés de recência.
+tempo de acúmulo) e contra os de 2024 a 2026. Há também a distância entre o que a
+citação mede, influência acumulada, e o que a leitura próxima procura, densidade
+figurativa.
 
-Estado: **pendente**, decidir na transição Etapa 1 para Etapa 4.
+Estado: **resolvido em 24/06/2026** pela amostragem teórica por densidade
+figurativa. Decido selecionar o subcorpus de 30 a 50 artigos por amostragem
+orientada por informação, no sentido que Flyvbjerg dá ao termo: privilegio os
+casos que carregam mais figuração, medida pela contagem da Etapa 2, em vez de
+representatividade estatística ou impacto. A seleção fica estratificada por
+período e por estrato disciplinar, para que a leitura cubra a variação do campo e
+não só os artigos mais densos de um único nicho. Mantenho a contagem de citações
+como descritor secundário no subcorpus, registrada para contextualização, sem
+peso na seleção. Operacionalização em `scripts/08_sample_subcorpus.py` e detalhe
+em `docs/decisoes_metodologicas.md` (seção 6, abaixo).
 
 ## 3. Família antropomórfica e homonímia técnica (24/06/2026)
 
@@ -93,3 +111,28 @@ expansões registradas em `docs/historico.md`.
 Seed fixo `seed=42` em qualquer amostragem ou processo estocástico (amostragem de
 corpus, LDA, BERTopic). Documentação da constituição de corpus segundo PRISMA
 (`docs/prisma/`), síntese qualitativa segundo ENTREQ.
+
+## 6. Operacionalização das decisões 2.a e 2.d (24/06/2026)
+
+Registro aqui como as duas decisões resolvidas hoje se traduzem no pipeline, para
+manter a rastreabilidade entre a escolha metodológica e o código.
+
+Sobre 2.a, anais de conferência: o tipo `Proceedings Paper` permanece em
+`TIPOS_INCLUIDOS` no passo `03_apply_criteria.py` e em `DT` na *query* v1. Os
+critérios automatizáveis aceitam o anais; a triagem manual posterior, sobre
+presença de análise textual e reflexão epistêmica, decide artigo a artigo, do
+mesmo modo que decide para periódicos. A condição que reabriria a opção (ii) fica
+explícita: lacuna de cobertura do polo técnico revelada pela busca-piloto, caso em
+que eu acrescento o arXiv como base paralela e abro um segundo fluxo PRISMA.
+
+Sobre 2.d, amostragem do subcorpus: o passo `08_sample_subcorpus.py` lê a matriz
+de codificação (refinada quando existe, bruta caso contrário) e os metadados,
+calcula uma medida de densidade figurativa por artigo (soma das ocorrências das
+nove famílias dividida pelo comprimento do resumo em palavras, para não premiar só
+resumos longos), estratifica por período e por estrato disciplinar, e seleciona em
+cada estrato os artigos de maior densidade até compor o alvo de 30 a 50. A contagem
+de citações entra como coluna descritiva no resultado, sem peso na ordenação. O
+seed fixo `seed=42` governa o desempate. A definição operacional do polo técnico
+contra o crítico fica como dependência aberta: por ora o estrato disciplinar usa a
+categoria WoS; quando eu fixar o indicador de polo, ele entra como coluna de
+estratificação adicional, registrada como nova decisão.

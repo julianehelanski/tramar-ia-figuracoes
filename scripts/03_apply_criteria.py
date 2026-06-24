@@ -21,7 +21,9 @@ from _paths import METADATA_CSV
 
 ANO_MIN, ANO_MAX = 2015, 2026
 IDIOMAS = {"en", "pt", "es"}
-# Decisão 2.a (docs/decisoes_metodologicas.md): incluir "Proceedings Paper" ou não.
+# Decisão 2.a (docs/decisoes_metodologicas.md), resolvida em 24/06/2026 pela opção
+# (i): anais indexados com revisão por pares entram, então "Proceedings Paper"
+# permanece entre os tipos incluídos. Reabrir a exclusão exige nova decisão.
 TIPOS_INCLUIDOS = {"Article", "Review", "Proceedings Paper"}
 
 
