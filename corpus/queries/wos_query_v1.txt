@@ -38,4 +38,4 @@ PROTOCOLO DE BUSCA-PILOTO (antes de fixar a query):
 3. Anotar falsos positivos e calibrar termos (candidatos a remover: imagery, se
    trouxer ruído de processamento de imagem; rhetoric*, se trouxer retórica não
    figurativa).
-4. Registrar contagem e decisão de calibração em docs/prisma/contagem_prisma.md.
+4. Registrar contagem e decisão de calibração em docs/prisma/fluxograma_prisma.md.

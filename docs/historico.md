@@ -84,6 +84,16 @@
   imports reordenados, `zip(strict=True)` e ajustes menores. Pipeline revalidado de
   ponta a ponta após a formatação.
 
+## 2026-06-24 (protocolo de extração)
+
+- Protocolo de extração das bases em `docs/protocolo_extracao.md`: passo a passo de
+  exportação na WoS (tab-delimited, Full Record, lotes de 1000) e na Scopus (CSV
+  com os três grupos de campos, lotes de ~2000), formatos que o `01_import_wos.py`
+  consome, mais a conferência amostral pós-importação.
+- Query Scopus v1 em `corpus/queries/scopus_query_v1.txt`, tradução da WoS v1 para a
+  sintaxe TITLE-ABS-KEY/DOCTYPE/LANGUAGE (decisão 2.c trouxe a Scopus ao escopo).
+- Referências de PRISMA apontadas ao arquivo real `docs/prisma/fluxograma_prisma.md`.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

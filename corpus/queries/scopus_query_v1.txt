@@ -1,0 +1,30 @@
+Scopus — Advanced Search
+Versão 1 (24/06/2026). Tradução da estratégia RESTRITIVA da query WoS v1.
+
+Equivalências de sintaxe em relação à WoS (wos_query_v1.txt):
+- TS=(...)                 -> TITLE-ABS-KEY(...)
+- PY=(2015-2026)           -> PUBYEAR > 2014 AND PUBYEAR < 2027
+- DT=(Article OR Review    -> DOCTYPE(ar OR re OR cp)
+      OR "Proceedings Paper")   (ar = article, re = review, cp = conference paper)
+- LA=(English OR ...)      -> LANGUAGE(english OR portuguese OR spanish)
+- truncamento * e aspas de frase funcionam como na WoS.
+
+--------------------------------------------------------------------------------
+TITLE-ABS-KEY("artificial intelligence" OR "machine learning" OR "deep learning"
+    OR "neural network*" OR "large language model*" OR "language model*"
+    OR "generative AI" OR "foundation model*" OR "natural language processing")
+AND TITLE-ABS-KEY(metaphor* OR figurative OR figuration* OR trope* OR imagery
+    OR rhetoric* OR anthropomorph* OR personif* OR "analogy" OR "analogical")
+AND PUBYEAR > 2014 AND PUBYEAR < 2027
+AND DOCTYPE(ar OR re OR cp)
+AND LANGUAGE(english OR portuguese OR spanish)
+--------------------------------------------------------------------------------
+
+Notas:
+- Mantém as mesmas decisões da WoS v1: anais incluídos (cp), três idiomas (decisões
+  2.a e 2.c). Restringir a inglês troca a linha LANGUAGE por LANGUAGE(english).
+- Scopus não traz a categoria WoS; a coluna categoria_wos fica vazia para os
+  registros Scopus (a estratificação disciplinar da Etapa 3 usa o que houver).
+- A deduplicação entre WoS e Scopus roda por DOI em 02_dedup.py.
+- ESTRATÉGIA AMPLA: remover o segundo bloco AND TITLE-ABS-KEY(metaphor* ...), nas
+  mesmas condições da WoS (não rodar sem busca-piloto de dimensionamento).
