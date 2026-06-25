@@ -67,23 +67,28 @@ def montar_filtro(
     fields: str | None,
     busca: str | None = None,
     so_titulo: bool = False,
+    issn: str | None = None,
 ) -> str:
     """Monta o filtro da OpenAlex (vírgula = E).
 
     Com `busca`, acrescenta uma busca de texto para o corpus metalinguístico
-    restritivo: artigos de IA que tematizam metáfora, figuração, tropo. Por padrão a
-    busca varre título e resumo; com `so_titulo`, varre só o título, o que é bem mais
-    preciso (um artigo cujo título anuncia figuração é, em geral, sobre figuração).
+    restritivo; com `so_titulo`, varre só o título. Com `issn`, recorta por periódico
+    (uma ou mais ISSN separadas por `|`), o caminho para o polo crítico por
+    comunidade. `concept` vazio dispensa o filtro de conceito de IA, útil para
+    periódicos que já são do campo (ex.: Big Data & Society).
     """
     partes = [
-        f"concepts.id:{concept}",
         f"from_publication_date:{ano_ini}-01-01",
         f"to_publication_date:{ano_fim}-12-31",
     ]
+    if concept:
+        partes.insert(0, f"concepts.id:{concept}")
     if fields:
         partes.append(f"primary_topic.field.id:{fields}")
     if pais:
         partes.append(f"authorships.countries:{pais.upper()}")
+    if issn:
+        partes.append(f"primary_location.source.issn:{issn}")
     if busca:
         campo = "title.search" if so_titulo else "title_and_abstract.search"
         partes.append(f"{campo}:{busca}")
@@ -184,6 +189,10 @@ def main() -> None:
     parser.add_argument("--ano-final", type=int, default=2026)
     parser.add_argument("--concept", default=CONCEITO_IA, help="id do conceito OpenAlex")
     parser.add_argument(
+        "--sem-conceito", action="store_true", help="dispensa o filtro de conceito de IA"
+    )
+    parser.add_argument("--issn", default=None, help="recorte por periódico: ISSN (várias com |)")
+    parser.add_argument(
         "--busca",
         default=None,
         help="busca metalinguística em título/resumo (ex.: 'metaphor OR figuration OR trope')",
@@ -203,14 +212,16 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    concept = "" if args.sem_conceito else args.concept
     filtro = montar_filtro(
-        args.concept,
+        concept,
         args.ano_inicial,
         args.ano_final,
         args.pais,
         args.fields,
         args.busca,
         args.titulo,
+        args.issn,
     )
     escopo = args.pais.upper() if args.pais else "global"
     estrato = f" | fields {args.fields}" if args.fields else ""

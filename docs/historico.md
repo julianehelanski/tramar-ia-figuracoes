@@ -145,6 +145,18 @@
 - `01e_scrape_openalex.py` ganhou `--busca` (title_and_abstract.search) para
   constituir o corpus metalinguístico na OpenAlex. Registro em decisões, seção 8.
 
+## 2026-06-25 (percurso dos três corpora e conclusão de método)
+
+- Registrado em `docs/percurso_metodologico.md` o percurso de constituição do corpus
+  e a conclusão central: a figuração crítica-STS não é isolável por palavra-chave nem
+  por área. Corpus 1 (amostra por área, 6.296) opõe engenharia a educação; corpus 2
+  (metalinguístico no título, 1.258) opõe robótica a linguística da metáfora; nenhum
+  dos dois é o registro material-semiótico buscado.
+- Figuras de material geradas para os dois corpora (contraste por família e keyness).
+- Decisão: operacionalizar o polo crítico por periódico (Big Data & Society, STHV,
+  Social Studies of Science, AI & Society, New Media & Society), não por palavra.
+  `01e` ganhou modo de busca por fonte (`--issn`).
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data
