@@ -342,6 +342,14 @@ def main() -> None:
         choices=["wos", "scopus", "ris", "openalex"],
         help="base/formato da fonte correspondente (repetível)",
     )
+    parser.add_argument(
+        "--polo", default=None,
+        help="rótulo de polo (ex.: crítico, técnico) gravado na coluna 'polo' destes registros",
+    )
+    parser.add_argument(
+        "--append", action="store_true",
+        help="acrescenta ao corpus_metadata.csv existente, em vez de sobrescrever",
+    )
     args = parser.parse_args()
 
     if len(args.fonte) != len(args.base):
@@ -355,7 +363,13 @@ def main() -> None:
         frames.append(df)
 
     consolidado = consolidar(frames)
+    if args.polo:
+        consolidado["polo"] = args.polo
     METADATA_CSV.parent.mkdir(parents=True, exist_ok=True)
+    if args.append and METADATA_CSV.exists():
+        antigo = pd.read_csv(METADATA_CSV)
+        consolidado = pd.concat([antigo, consolidado], ignore_index=True)
+        consolidado["id"] = [f"art{n:06d}" for n in range(1, len(consolidado) + 1)]
     consolidado.to_csv(METADATA_CSV, index=False)
     print(f"{len(consolidado)} registros consolidados em {METADATA_CSV}")
     print("Próximo passo: python scripts/02_dedup.py")

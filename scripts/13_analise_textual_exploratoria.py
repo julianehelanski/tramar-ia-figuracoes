@@ -65,7 +65,11 @@ def carregar() -> pd.DataFrame:
     if "incluido" in df.columns:
         df = df[df["incluido"] == True]  # noqa: E712
     df = df[df["abstract"].notna() & (df["abstract"].astype(str).str.len() > 0)].copy()
-    df["polo"] = df["categoria_wos"].map(POLO).fillna("outro")
+    # Polo por fonte (coluna `polo`) quando existe; senão, por área (`categoria_wos`).
+    if "polo" in df.columns and df["polo"].notna().any():
+        df["polo"] = df["polo"].fillna("outro")
+    else:
+        df["polo"] = df["categoria_wos"].map(POLO).fillna("outro")
     return df
 
 

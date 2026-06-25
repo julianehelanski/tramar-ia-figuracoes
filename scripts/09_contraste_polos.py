@@ -40,8 +40,14 @@ def main() -> None:
     meta = pd.read_csv(METADATA_CSV)
     familias = [c for c in matriz.columns if c != "id"]
 
-    df = matriz.merge(meta[["id", "categoria_wos"]], on="id", how="left")
-    df["polo"] = df["categoria_wos"].map(POLO).fillna("outro")
+    # Polo por fonte (coluna `polo`, recorte por periódico) quando existe; senão, por
+    # área disciplinar (`categoria_wos`).
+    cols = ["id", "categoria_wos"] + (["polo"] if "polo" in meta.columns else [])
+    df = matriz.merge(meta[cols], on="id", how="left")
+    if "polo" in df.columns and df["polo"].notna().any():
+        df["polo"] = df["polo"].fillna("outro")
+    else:
+        df["polo"] = df["categoria_wos"].map(POLO).fillna("outro")
     df = df[df["polo"].isin(["técnico", "crítico"])]
 
     n_por_polo = df["polo"].value_counts()
