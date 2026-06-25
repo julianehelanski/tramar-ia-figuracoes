@@ -194,10 +194,21 @@ usa só o contexto, nunca o polo do artigo, para não contaminar o contraste. A
 acurácia é conferida por amostra estratificada por confiança (`04d`, `seed=42`), e a
 correção manual prevalece sobre a regra onde a amostra revelar erro.
 
-Resultado registrado: sobre 3.404 artigos técnicos e 2.892 críticos, a figuração
-antropomórfica é cerca de 73 por 100 artigos no polo crítico contra 38 no técnico, e
-esse contraste se acentua depois da desambiguação (a razão crítico sobre técnico passa
-de 1,6 bruta para 1,9 refinada). A leitura didática completa está em
+Resultado da primeira passagem (desambiguação binária): sobre 3.404 artigos técnicos
+e 2.892 críticos, a figuração antropomórfica vinha cerca de 73 por 100 artigos no polo
+crítico contra 38 no técnico.
+
+Revisão após validação (25/06/2026): a conferência por amostra (`04d`) mostrou que o
+esquema binário inflava a figuração com cognição humana literal. Na amostra de 40
+ocorrências antropomórficas, das 20 que a regra binária chamava de figurativas, 16
+eram cognição humana literal (estudantes que aprendem, conhecimento dos
+pesquisadores), não figuração da IA; na militar, 18 das 20. Decido então adotar uma
+classificação em três vias, `figurativa` (predicado da IA), `tecnica` (termo
+sedimentado) e `literal` (predicado de humano ou organização), com o passe automático
+decidindo pela âncora técnica e, na falta dela, pelo sujeito mais próximo do termo. Só
+a `figurativa` conta. O contraste antropomórfico precisa ser recomputado sobre esse
+esquema, e a expectativa é que o número do polo crítico caia, porque era ali que a
+cognição humana literal mais inflava. A leitura didática está em
 `docs/passo_a_passo_analise.md`.
 
 Pendência anotada: a família oceânica não é desambiguada, então o `deep` de `deep

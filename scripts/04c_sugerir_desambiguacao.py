@@ -7,11 +7,16 @@ Lê os CSV de desambiguação gerados por `04b_desambiguar.py --gerar`
 manual: a pesquisadora revisa de perto as de baixa confiança e confere por amostra as
 de alta.
 
-A regra é transparente e conservadora: se o contexto KWIC traz uma âncora técnica do
-termo (por exemplo, `attention` perto de `mechanism`, `learning` perto de `rate`),
-sugere `tecnica` com confiança alta; senão, sugere `figurativa` com confiança baixa,
-para revisão. A classificação usa só o contexto, nunca o polo do artigo, para não
-contaminar o contraste técnico contra crítico.
+Classificação em três vias (a validação mostrou que a binária inflava a figuração
+com cognição humana literal das ciências sociais):
+- `tecnica`: o contexto traz uma âncora técnica do termo (`attention` perto de
+  `mechanism`, `learning` perto de `rate`);
+- `figurativa`: o predicado é atribuído à IA (modelo, sistema, algoritmo perto do
+  termo); ainda pede conferência entre figurativo e técnico-ML;
+- `literal`: o predicado é de humano ou organização (`students learn`, `our
+  knowledge`), ou o sujeito é indeterminado.
+Só a `figurativa` conta na matriz refinada. A classificação usa só o contexto, nunca
+o polo do artigo, para não contaminar o contraste.
 
 Com `--aceitar-alta`, copia a sugestão para `categoria_final` apenas nas de alta
 confiança (as técnicas ancoradas), deixando as de baixa confiança em branco para a
@@ -225,29 +230,147 @@ ANCORAS_TEC: dict[str, list[str]] = {
 }
 
 
+# Sujeitos do predicado, para distinguir figuração da IA de cognição humana literal.
+SUJEITO_IA = {
+    "model",
+    "models",
+    "network",
+    "networks",
+    "system",
+    "systems",
+    "algorithm",
+    "algorithms",
+    "ai",
+    "machine",
+    "machines",
+    "robot",
+    "robots",
+    "llm",
+    "llms",
+    "gpt",
+    "agent",
+    "agents",
+    "transformer",
+    "architecture",
+    "software",
+    "chatbot",
+    "framework",
+    "encoder",
+    "decoder",
+    "classifier",
+}
+SUJEITO_HUMANO = {
+    "student",
+    "students",
+    "people",
+    "person",
+    "persons",
+    "human",
+    "humans",
+    "child",
+    "children",
+    "user",
+    "users",
+    "researcher",
+    "researchers",
+    "participant",
+    "participants",
+    "teacher",
+    "teachers",
+    "author",
+    "authors",
+    "society",
+    "company",
+    "companies",
+    "government",
+    "team",
+    "teams",
+    "patient",
+    "patients",
+    "worker",
+    "workers",
+    "citizen",
+    "citizens",
+    "learner",
+    "learners",
+    "we",
+    "our",
+    "us",
+    "they",
+    "their",
+    "consumer",
+    "consumers",
+    "individual",
+    "individuals",
+    "nurse",
+    "doctor",
+    "professional",
+    "professionals",
+    "organization",
+    "organisation",
+}
+
+
 def _ctx_limpo(contexto: str) -> str:
     """Contexto KWIC em minúsculas, sem os marcadores [[ ]] do termo central."""
     return re.sub(r"\[\[|\]\]", " ", str(contexto)).lower()
 
 
+def classificar_sujeito(contexto: str) -> tuple[str | None, int]:
+    """Acha o sujeito mais próximo do termo: ('ia'|'humano'|None, distância em palavras).
+
+    Procura para os dois lados do termo (marcado por [[ ]]); o sujeito de menor
+    distância vence. None quando nenhum sujeito conhecido aparece na janela.
+    """
+    partes = re.split(r"\[\[.*?\]\]", str(contexto), maxsplit=1)
+    esquerda = re.findall(r"[a-zA-Záàâãéêíóôõúç-]+", partes[0].lower())
+    direita = re.findall(r"[a-zA-Záàâãéêíóôõúç-]+", partes[1].lower()) if len(partes) > 1 else []
+
+    melhor_tipo, melhor_dist = None, 999
+    for dist, palavra in enumerate(reversed(esquerda), start=1):  # mais perto = antes
+        tipo = "ia" if palavra in SUJEITO_IA else ("humano" if palavra in SUJEITO_HUMANO else None)
+        if tipo and dist < melhor_dist:
+            melhor_tipo, melhor_dist = tipo, dist
+            break
+    for dist, palavra in enumerate(direita, start=1):
+        tipo = "ia" if palavra in SUJEITO_IA else ("humano" if palavra in SUJEITO_HUMANO else None)
+        if tipo and dist < melhor_dist:
+            melhor_tipo, melhor_dist = tipo, dist
+            break
+    return melhor_tipo, melhor_dist
+
+
 def sugerir(termo: str, contexto: str) -> tuple[str, str, str]:
-    """Devolve (categoria_sugerida, confianca, motivo) por âncora de contexto."""
+    """Devolve (categoria_sugerida, confianca, motivo) em três vias.
+
+    figurativa = o predicado é atribuído à IA (modelo, sistema, algoritmo);
+    tecnica    = termo técnico sedimentado (âncora técnica no contexto);
+    literal    = o predicado é de humano ou organização, ou sujeito indeterminado.
+    """
     termo_l = str(termo).strip().lower()
-    ancoras = ANCORAS_TEC.get(termo_l, [])
     ctx = _ctx_limpo(contexto)
-    for ancora in ancoras:
+    for ancora in ANCORAS_TEC.get(termo_l, []):
         if ancora in ctx:
             return "tecnica", "alta", f"âncora técnica: {ancora}"
-    return "figurativa", "baixa", "sem âncora técnica; revisar"
+
+    sujeito, _ = classificar_sujeito(contexto)
+    if sujeito == "humano":
+        return "literal", "alta", "sujeito humano/organização"
+    if sujeito == "ia":
+        return "figurativa", "media", "sujeito IA; conferir se é figurativo ou técnico-ML"
+    return "literal", "baixa", "sujeito indeterminado; revisar"
 
 
-def processar(caminho, aceitar_alta: bool, aceitar_tudo: bool) -> pd.DataFrame:
+def processar(caminho, aceitar_alta: bool, aceitar_tudo: bool, refazer: bool) -> pd.DataFrame:
     """Aplica as regras a um CSV de desambiguação e devolve o DataFrame anotado."""
     df = pd.read_csv(caminho).fillna({"categoria_final": "", "categoria_sugerida": ""})
     sugest = df.apply(lambda r: sugerir(r["termo"], r["contexto"]), axis=1)
     df["categoria_sugerida"] = [s[0] for s in sugest]
     df["confianca"] = [s[1] for s in sugest]
     df["motivo"] = [s[2] for s in sugest]
+    if refazer:  # sobrescreve toda a classificação pela sugestão nova
+        df["categoria_final"] = df["categoria_sugerida"]
+        return df
     vazias = df["categoria_final"].astype(str).str.strip() == ""
     if aceitar_tudo:
         df.loc[vazias, "categoria_final"] = df.loc[vazias, "categoria_sugerida"]
@@ -269,6 +392,11 @@ def main() -> None:
         action="store_true",
         help="preenche categoria_final por toda a sugestão (versão rápida a corrigir por amostra)",
     )
+    parser.add_argument(
+        "--refazer",
+        action="store_true",
+        help="sobrescreve categoria_final inteira pela sugestão nova (reaplica a regra)",
+    )
     args = parser.parse_args()
 
     csvs = sorted(ETAPA2.glob("desambiguacao_*.csv"))
@@ -279,26 +407,26 @@ def main() -> None:
         )
 
     for caminho in csvs:
-        df = processar(caminho, args.aceitar_alta, args.aceitar_tudo)
+        df = processar(caminho, args.aceitar_alta, args.aceitar_tudo, args.refazer)
         df.to_csv(caminho, index=False)
         familia = caminho.stem.replace("desambiguacao_", "")
         n = len(df)
-        n_alta = int((df["confianca"] == "alta").sum())
-        n_fig = int((df["categoria_sugerida"] == "figurativa").sum())
+        cont = df["categoria_sugerida"].value_counts()
         preenchidas = int((df["categoria_final"].astype(str).str.strip() != "").sum())
         print(f"\n=== {familia}: {n} ocorrências ===")
-        print(f"  técnica ancorada (alta confiança): {n_alta}  " f"({n_alta / n:.0%})")
-        print(f"  figurativa sugerida (baixa, revisar): {n_fig}")
+        for cat in ("figurativa", "tecnica", "literal"):
+            q = int(cont.get(cat, 0))
+            print(f"  {cat}: {q} ({q / n:.0%})")
         print(f"  categoria_final já preenchida: {preenchidas}")
-        amostra = df[df["confianca"] == "baixa"].head(4)
+        amostra = df[df["categoria_sugerida"] == "figurativa"].head(4)
         if not amostra.empty:
-            print("  amostra para revisão (baixa confiança):")
+            print("  amostra de figurativa (sujeito IA; conferir figurativo vs técnico-ML):")
             for _, r in amostra.iterrows():
                 print(f"    [{r['termo']}] {str(r['contexto'])[:90]}")
 
     print(
-        "\nRevise as de baixa confiança nos CSV (coluna categoria_final), confira por "
-        "amostra as de alta, e rode: python scripts/04b_desambiguar.py"
+        "\nConfira as figurativas (sujeito IA) e as de baixa confiança, ajuste "
+        "categoria_final, e rode: python scripts/04b_desambiguar.py"
     )
 
 

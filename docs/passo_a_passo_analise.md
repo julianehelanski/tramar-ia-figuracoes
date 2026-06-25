@@ -112,18 +112,29 @@ a figuração, sobretudo no polo técnico.
 
 Eu trato isso no molde da desambiguação `war`/`wars` do projeto sobre Latour: a
 contagem fica em duas versões, bruta e refinada, e a camada de classificação fica num
-CSV auditável fora do script. Para tornar viável classificar milhares de ocorrências,
-o passe automático (`04c`) sugere `tecnica` quando o contexto KWIC traz uma âncora
-técnica do termo (por exemplo `attention` perto de `mechanism`, `learning` perto de
-`rate`, `knowledge` perto de `graph`, `target` perto de `variable`), com confiança
-alta; senão, sugere `figurativa` com confiança baixa, para revisão. Cada decisão
-registra a âncora que disparou, então a regra é auditável.
+CSV auditável fora do script.
 
-Um cuidado metodológico: a classificação usa só o contexto, nunca o polo do artigo.
-Classificar pelo polo contaminaria o próprio contraste que eu quero medir.
+A validação por amostra (`04d`) revelou que um esquema binário (figurativa contra
+técnica) era grosso demais. Boa parte das ocorrências que ele chamava de figurativas,
+sobretudo no polo crítico, era cognição humana literal: artigos de educação e
+psicologia falando de estudantes que aprendem, de pessoas que entendem, do
+conhecimento dos pesquisadores. Isso não é a IA personificada, é gente sendo
+descrita. Por isso adotei uma classificação em três vias:
 
-A acurácia do passe automático é conferida por amostra (`04d`), e onde a regra erra
-eu corrijo a classificação à mão antes de fixar o resultado.
+- `tecnica`: termo técnico sedimentado, marcado por uma âncora no contexto KWIC
+  (`attention` perto de `mechanism`, `target` perto de `variable`);
+- `figurativa`: o predicado é atribuído à IA, ao modelo, ao sistema ou ao algoritmo;
+- `literal`: o predicado é de um humano ou de uma organização, ou o sujeito é
+  indeterminado.
+
+Só a `figurativa` conta na contagem refinada. O passe automático (`04c`) decide pela
+âncora técnica e, na falta dela, pelo sujeito mais próximo do termo (IA contra
+humano). Cada decisão registra seu motivo, então a regra é auditável.
+
+Dois cuidados metodológicos: a classificação usa só o contexto, nunca o polo do
+artigo, para não contaminar o contraste; e as ocorrências classificadas como
+figurativas, por terem sujeito de IA, ainda pedem uma conferência entre figuração e
+predicado técnico-ML, que eu faço por amostra antes de fixar o resultado.
 
 ## 6. O resultado: o contraste figurativo
 

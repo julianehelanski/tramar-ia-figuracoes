@@ -49,7 +49,9 @@ IDIOMAS = _lex.IDIOMAS
 
 # Janela KWIC (palavras de cada lado) registrada no contexto de classificação.
 JANELA_KWIC = 8
-CATEGORIAS_VALIDAS = {"figurativa", "tecnica"}
+# Três vias: só `figurativa` (predicado atribuído à IA) conta na matriz refinada.
+# `tecnica` (termo sedimentado) e `literal` (cognição humana, não da IA) são excluídas.
+CATEGORIAS_VALIDAS = {"figurativa", "tecnica", "literal"}
 
 
 def carregar_catalogo() -> dict:
