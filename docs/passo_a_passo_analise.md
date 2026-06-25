@@ -194,8 +194,9 @@ O `seed=42` garante que a amostra e os sorteios se repitam.
 - A análise corre sobre o resumo, não o texto integral. É um piso da figuração.
 - A desambiguação automática é uma heurística, validada por amostra, não um juízo
   fino caso a caso. Onde a amostra revelar erro, eu corrijo à mão.
-- A família oceânica ainda não é desambiguada: o `deep` de `deep learning` infla o
-  polo técnico. Isso não afeta o achado antropomórfico, e fica anotado para a próxima
-  rodada.
+- A desambiguação de três vias cobre seis famílias: as cognitivas (antropomórfica e
+  militar) e as materiais (biológica, têxtil, oceânica, extrativa). As três
+  restantes (mecânica, religiosa, caixa) entram na contagem bruta, por terem pouca
+  homonímia técnica.
 - O catálogo casa formas exatas. Plurais e flexões fora das listas escapam, e a
   cobertura pt/es do catálogo é rascunho a validar.

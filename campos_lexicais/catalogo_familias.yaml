@@ -43,6 +43,7 @@ textil:
                  "rede convolucional"]
   exclusoes_es: ["red neuronal", "redes neuronales", "red neuronal profunda",
                  "red convolucional"]
+  desambiguar: true
   nota: "Família-hipótese do projeto. 'network'/'rede'/'red' é o termo de fronteira:
     têxtil em Haraway, técnico-literal em IA. A exclusão remove os usos compostos
     com 'neural/deep/convolutional'; usos isolados exigem leitura. Cruzar com o
@@ -63,6 +64,7 @@ biologica:
               "crecimiento", "crecer", "generación", "neurona", "neuronas", "sinapsis",
               "sináptico", "genético", "adn", "célula", "orgánico", "adaptar",
               "adaptación", "selección natural"]
+  desambiguar: true
   nota: "Registro biológico-orgânico. 'neural' e 'learning' são também
     técnico-literais; ver família antropomórfica e a salvaguarda de homonímia."
 
@@ -109,6 +111,7 @@ oceanica:
   termos_es: ["flujo", "flujos", "fluir", "inmersión", "sumergir", "profundo",
               "profundidad", "océano", "corriente", "marea", "fluido", "fluidez",
               "pipeline", "ola", "olas", "superficie", "deriva", "inundación", "torrente"]
+  desambiguar: true
   nota: "Registro oceânico-líquido. 'deep'/'profundo' é o termo de fronteira: literal
     em 'deep learning', figurativo em metáforas de profundidade. Desambiguar quando
     isolado de 'learning/network'."
@@ -161,6 +164,7 @@ extrativa:
               "refinado", "cosechar", "cosecha", "raspar", "raspado", "cavar",
               "excavar", "extractivo", "mineral", "cantera", "perforar", "recurso",
               "depósito"]
+  desambiguar: true
   nota: "Registro mineralógico-extrativo, ressonante com Crawford (2021) sobre as
     cadeias materiais da computação. 'data mining'/'mineração de dados' é termo
     técnico consolidado: rastrear se a metáfora extrativa é tematizada ou naturalizada."

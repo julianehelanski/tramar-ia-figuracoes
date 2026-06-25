@@ -227,6 +227,121 @@ ANCORAS_TEC: dict[str, list[str]] = {
     "frontier": ["model", "models", "efficient"],
     "weapon": ["autonomous", "lethal", "nuclear"],
     "weaponize": ["autonomous", "lethal"],
+    # família biológica
+    "neural": ["network", "networks", "net", "nets"],
+    "evolve": ["evolutionary algorithm", "differential"],
+    "evolution": ["evolutionary algorithm", "differential evolution", "computation"],
+    "mutation": ["genetic algorithm", "rate", "operator"],
+    "growth": ["rate", "curve", "factor"],
+    "generation": [
+        "text generation",
+        "image generation",
+        "data generation",
+        "code generation",
+        "next-generation",
+        "generative",
+        "retrieval",
+    ],
+    "cell": ["lstm", "gru", "memory cell", "grid", "unit"],
+    "neuron": ["artificial", "spiking"],
+    "adapt": ["domain", "adaptive"],
+    "adaptation": ["domain", "adaptive"],
+    "dna": ["sequencing", "sequence"],
+    # família têxtil (network e variantes técnicas)
+    "network": [
+        "neural",
+        "convolutional",
+        "deep",
+        "recurrent",
+        "adversarial",
+        "bayesian",
+        "architecture",
+        "traffic",
+        "wireless",
+        "sensor",
+        "communication",
+        "protocol",
+        "layer",
+        "graph",
+        "social",
+        "road",
+        "transport",
+        "complex",
+        "attention",
+        "backbone",
+    ],
+    "networks": ["neural", "convolutional", "deep", "adversarial", "bayesian"],
+    "mesh": ["network", "wireless", "finite element", "polygon", "3d"],
+    "fiber": ["optical", "optic"],
+    "fibre": ["optical", "optic"],
+    "thread": ["thread-level", "multi-thread", "execution"],
+    # família oceânica
+    "deep": ["learning", "neural", "network", "reinforcement", "belief", "convolutional"],
+    "stream": ["data", "video", "bit", "live", "processing", "input"],
+    "streaming": ["data", "video", "live", "media"],
+    "flow": [
+        "optical",
+        "data",
+        "work",
+        "tensor",
+        "traffic",
+        "information",
+        "gradient",
+        "load",
+        "normalizing",
+    ],
+    "flows": ["optical", "data", "traffic", "normalizing"],
+    "pipeline": ["data", "processing", "deep", "training", "inference", "ci"],
+    "wave": ["wavelet", "waveform", "wave function", "micro", "radio", "electromagnetic"],
+    "waves": ["wavelet", "micro", "radio", "electromagnetic"],
+    "current": ["electric", "alternating", "direct"],
+    "surface": ["decision", "loss", "response", "reconstruction"],
+    "depth": ["estimation", "map", "camera", "sensor", "image", "perception", "first"],
+    "immersion": ["virtual", "vr"],
+    # família extrativa
+    "mining": [
+        "data",
+        "text",
+        "process",
+        "pattern",
+        "opinion",
+        "argument",
+        "web",
+        "graph",
+        "frequent",
+        "rule",
+    ],
+    "mine": ["data", "text"],
+    "extract": [
+        "feature",
+        "information",
+        "entity",
+        "keyword",
+        "relation",
+        "text",
+        "knowledge",
+        "data",
+        "automatic",
+    ],
+    "extraction": [
+        "feature",
+        "information",
+        "entity",
+        "keyword",
+        "relation",
+        "text",
+        "knowledge",
+        "data",
+        "automatic",
+    ],
+    "raw": ["data", "image", "signal", "input", "pixel", "material"],
+    "refine": ["mesh", "search", "iteratively", "coarse-to-fine"],
+    "refined": ["mesh", "search", "feature"],
+    "harvest": ["energy", "data"],
+    "harvesting": ["energy", "data"],
+    "resource": ["computational", "computing", "allocation", "resource-constrained"],
+    "scrape": ["web", "data"],
+    "scraping": ["web", "data"],
 }
 
 
@@ -340,12 +455,19 @@ def classificar_sujeito(contexto: str) -> tuple[str | None, int]:
     return melhor_tipo, melhor_dist
 
 
-def sugerir(termo: str, contexto: str) -> tuple[str, str, str]:
+# Famílias de metáfora material: a figuração não é predicado de um sujeito, é a
+# imagem em si (a trama, a profundidade, a extração). Nelas, o que não é
+# técnico-ancorado fica como figuração candidata, não como literal-humano.
+FAMILIAS_MATERIAIS = {"biologica", "textil", "oceanica", "extrativa"}
+
+
+def sugerir(termo: str, contexto: str, familia: str = "") -> tuple[str, str, str]:
     """Devolve (categoria_sugerida, confianca, motivo) em três vias.
 
-    figurativa = o predicado é atribuído à IA (modelo, sistema, algoritmo);
+    figurativa = a figuração é viva (predicado da IA, nas famílias cognitivas; imagem
+                 material sem âncora técnica, nas famílias materiais);
     tecnica    = termo técnico sedimentado (âncora técnica no contexto);
-    literal    = o predicado é de humano ou organização, ou sujeito indeterminado.
+    literal    = predicado de humano ou organização, ou sujeito indeterminado.
     """
     termo_l = str(termo).strip().lower()
     ctx = _ctx_limpo(contexto)
@@ -356,6 +478,10 @@ def sugerir(termo: str, contexto: str) -> tuple[str, str, str]:
     sujeito, _ = classificar_sujeito(contexto)
     if sujeito == "humano":
         return "literal", "alta", "sujeito humano/organização"
+
+    if str(familia).strip().lower() in FAMILIAS_MATERIAIS:
+        return "figurativa", "baixa", "imagem material sem âncora técnica; revisar"
+
     if sujeito == "ia":
         return "figurativa", "media", "sujeito IA; conferir se é figurativo ou técnico-ML"
     return "literal", "baixa", "sujeito indeterminado; revisar"
@@ -364,7 +490,7 @@ def sugerir(termo: str, contexto: str) -> tuple[str, str, str]:
 def processar(caminho, aceitar_alta: bool, aceitar_tudo: bool, refazer: bool) -> pd.DataFrame:
     """Aplica as regras a um CSV de desambiguação e devolve o DataFrame anotado."""
     df = pd.read_csv(caminho).fillna({"categoria_final": "", "categoria_sugerida": ""})
-    sugest = df.apply(lambda r: sugerir(r["termo"], r["contexto"]), axis=1)
+    sugest = df.apply(lambda r: sugerir(r["termo"], r["contexto"], r.get("familia", "")), axis=1)
     df["categoria_sugerida"] = [s[0] for s in sugest]
     df["confianca"] = [s[1] for s in sugest]
     df["motivo"] = [s[2] for s in sugest]

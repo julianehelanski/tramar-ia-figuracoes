@@ -211,6 +211,11 @@ esquema, e a expectativa é que o número do polo crítico caia, porque era ali 
 cognição humana literal mais inflava. A leitura didática está em
 `docs/passo_a_passo_analise.md`.
 
-Pendência anotada: a família oceânica não é desambiguada, então o `deep` de `deep
-learning` infla o polo técnico. Decido na próxima rodada se acrescento `deep` isolado
-à camada de desambiguação.
+Extensão (25/06/2026): estendi a desambiguação de três vias às famílias materiais
+homônimas (biológica, têxtil, oceânica, extrativa), que sofriam o mesmo problema da
+antropomórfica. Nelas, a regra trata como técnica os compostos sedimentados (`neural
+network`, `data mining`, `deep learning`, `feature extraction`, `optical flow`) e
+deixa como figuração candidata a imagem material sem âncora (a trama haraweana, a
+profundidade, a extração à la Crawford). Seis das nove famílias passam a ser
+desambiguadas; mecânica, religiosa e caixa seguem na contagem bruta, por baixa
+homonímia.
