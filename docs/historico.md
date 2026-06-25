@@ -169,6 +169,17 @@
 - Resultados e ponto de retomada registrados em `docs/percurso_metodologico.md`.
   Pendente para a próxima sessão: re-rodar `13` e `14` no corpus 3, depois a AFC.
 
+## 2026-06-25 (rede de Louvain do corpus 3 valida o recorte)
+
+- Rede de co-ocorrência por força de associação (`14`) rodada sobre o corpus 3: 60
+  termos, 104 arestas, seis comunidades, modularidade 0,509. A separação técnico vs
+  crítico emerge sozinha (comunidade técnico-computacional com learning/algorithm/
+  accuracy; comunidades crítico-culturais com technology/public/political e com media/
+  digital/platforms), contraprova indutiva do recorte por periódico. A comunidade IA/
+  humano/controle é a vizinhança compartilhada, por onde circula a antropomórfica.
+- Resultado e leitura registrados em `docs/percurso_metodologico.md`. Pendente: AFC
+  famílias × polo sobre o corpus 3 e a leitura final para a apresentação.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data
