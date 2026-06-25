@@ -125,12 +125,38 @@ Mesmo onde a figuração não organiza o campo, dois traços reaparecem:
 | 2 | busca metalinguística no título | 1.258 | robótica × linguística da metáfora |
 | 3 | por periódico (ISSN crítico vs campos 17,22) | 10.461 | crítica STS × computação |
 
+## A rede de Louvain do corpus 3 (a separação emerge sozinha)
+
+Rodei o `14` (rede de co-ocorrência por força de associação) sobre o corpus 3. A rede
+ficou com 60 termos e 104 arestas, particionada em seis comunidades, com modularidade
+0,509, acima do limiar de 0,3 que tomo como estrutura de comunidades legítima. As seis
+comunidades, pelas dez palavras de maior frequência de cada:
+
+| comunidade | termos de cabeça | leitura |
+| :--- | :--- | :--- |
+| 2 | learning, performance, network, algorithm, machine, accuracy, networks | núcleo técnico-computacional (aprendizado de máquina, desempenho) |
+| 0 | how, technology, public, political, understanding, role, critical | discurso crítico-STS (tecnologia como questão pública) |
+| 3 | social, media, digital, online, users, content, platforms, platform | estudos de plataforma e mídia digital |
+| 1 | systems, human, ai, control, artificial, intelligence | eixo IA/humano/controle (vizinhança compartilhada entre os polos) |
+| 5 | data, research, information, practices, development, future | práticas de dados e de pesquisa |
+| 4 | time, real, world | periférico (resíduo de \enquote{real-time}, \enquote{real world}) |
+
+A separação técnico contra crítico que não se deixava isolar por palavra-chave nem por
+área de conhecimento emerge sozinha quando deixo a rede se organizar por co-ocorrência:
+a comunidade 2 é o léxico do desempenho computacional, as comunidades 0 e 3 são o léxico
+crítico-cultural, e elas se destacam por modularidade. É a contraprova indutiva do
+recorte por periódico, pois o corpus 3 contém os dois registros e a rede os separa. A
+comunidade 1 (IA, humano, controle) é a vizinhança comum, por onde circula a
+antropomórfica, o que combina com ela ter ficado par no contraste por família. Figura em
+`outputs/figuras/rede_louvain.png`, comunidades em
+`outputs/exploratorio/comunidades_louvain.csv`.
+
 ## Ponto de retomada (sessão de 25/06/2026)
 
-Parei com o corpus 3 (por periódico) montado e o contraste do `09` rodado. Pendem,
-para a próxima sessão: rodar de novo o `13` (a keyness do corpus 3, que travou por um
-deslize de digitação) e o `14` (rede de Louvain, já melhorado para força de
-associação); depois, a AFC famílias × polo sobre este corpus, e a leitura final.
+O corpus 3 (por periódico) está montado, com o contraste do `09`, a keyness do `13` e a
+rede de Louvain do `14` rodados (modularidade 0,509, seis comunidades legíveis). Pende,
+para a próxima sessão: a AFC famílias × polo sobre este corpus, e a leitura final para a
+apresentação.
 
 Os corpora são regeneráveis (a máquina perdeu os arquivos locais, não o método):
 
