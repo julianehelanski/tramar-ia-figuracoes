@@ -66,12 +66,14 @@ def montar_filtro(
     pais: str | None,
     fields: str | None,
     busca: str | None = None,
+    so_titulo: bool = False,
 ) -> str:
     """Monta o filtro da OpenAlex (vírgula = E).
 
-    Com `busca`, acrescenta uma busca de texto em título e resumo
-    (`title_and_abstract.search`), para o corpus metalinguístico restritivo: artigos
-    de IA que tematizam metáfora, figuração, tropo, antropomorfização.
+    Com `busca`, acrescenta uma busca de texto para o corpus metalinguístico
+    restritivo: artigos de IA que tematizam metáfora, figuração, tropo. Por padrão a
+    busca varre título e resumo; com `so_titulo`, varre só o título, o que é bem mais
+    preciso (um artigo cujo título anuncia figuração é, em geral, sobre figuração).
     """
     partes = [
         f"concepts.id:{concept}",
@@ -83,7 +85,8 @@ def montar_filtro(
     if pais:
         partes.append(f"authorships.countries:{pais.upper()}")
     if busca:
-        partes.append(f"title_and_abstract.search:{busca}")
+        campo = "title.search" if so_titulo else "title_and_abstract.search"
+        partes.append(f"{campo}:{busca}")
     return ",".join(partes)
 
 
@@ -186,6 +189,11 @@ def main() -> None:
         help="busca metalinguística em título/resumo (ex.: 'metaphor OR figuration OR trope')",
     )
     parser.add_argument(
+        "--titulo",
+        action="store_true",
+        help="restringe a busca ao título (mais preciso para o corpus metalinguístico)",
+    )
+    parser.add_argument(
         "--fields", default=None, help="estrato disciplinar (ex.: '17|22' técnico, '12|33' crítico)"
     )
     parser.add_argument("--amostra", type=int, default=None, help="N obras sorteadas (máx 10000)")
@@ -196,7 +204,13 @@ def main() -> None:
     args = parser.parse_args()
 
     filtro = montar_filtro(
-        args.concept, args.ano_inicial, args.ano_final, args.pais, args.fields, args.busca
+        args.concept,
+        args.ano_inicial,
+        args.ano_final,
+        args.pais,
+        args.fields,
+        args.busca,
+        args.titulo,
     )
     escopo = args.pais.upper() if args.pais else "global"
     estrato = f" | fields {args.fields}" if args.fields else ""
