@@ -6,9 +6,12 @@ Aceita múltiplas fontes numa só execução (uma por base) e empilha os registr
 a deduplicação fica para `02_dedup.py`.
 
 Formatos suportados:
-    wos     Web of Science *tab-delimited* (WoS Core, exportação "Tab-delimited").
-    scopus  Scopus CSV (exportação "CSV").
-    ris     RIS (Scopus/WoS via RIS), quando `rispy` está instalado.
+    wos       Web of Science *tab-delimited* (WoS Core, exportação "Tab-delimited").
+    scopus    Scopus CSV (exportação "CSV").
+    ris       RIS (Scopus/WoS via RIS), quando `rispy` está instalado.
+    openalex  OpenAlex em JSON (lista de works) ou JSONL (um work por linha),
+              como sai da API api.openalex.org/works. Reconstrói o resumo a partir
+              de `abstract_inverted_index` quando presente.
 
 Uso:
     python scripts/01_import_wos.py --fonte corpus/exports/wos_2026-06.txt --base wos
@@ -21,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import re
 from pathlib import Path
 
@@ -177,10 +181,107 @@ def _titlecase_tipo(valor: object) -> str:
     return mapa.get(s, s.title() if s else "")
 
 
+def reconstruir_abstract(indice: dict | None) -> str:
+    """Reconstrói o resumo a partir do `abstract_inverted_index` da OpenAlex.
+
+    O índice mapeia palavra -> lista de posições. A reconstrução ordena as palavras
+    por posição. Retorna string vazia quando o índice falta (dump sem resumo).
+    """
+    if not indice:
+        return ""
+    posicoes: list[tuple[int, str]] = []
+    for palavra, idxs in indice.items():
+        for i in idxs:
+            posicoes.append((i, palavra))
+    posicoes.sort()
+    return " ".join(palavra for _, palavra in posicoes)
+
+
+def _idioma_openalex(valor: object) -> str:
+    """Idioma da OpenAlex: já vem como código ISO de duas letras; valida no escopo."""
+    s = str(valor or "").strip().lower()
+    if len(s) == 2:
+        return s if s in {"en", "pt", "es"} else s
+    return normalizar_idioma(s)
+
+
+def _tipo_openalex(valor: object) -> str:
+    """Mapeia o `type` da OpenAlex para a forma do esquema."""
+    mapa = {
+        "article": "Article",
+        "review": "Review",
+        "proceedings-article": "Proceedings Paper",
+        "book-chapter": "Book Chapter",
+        "preprint": "Preprint",
+    }
+    s = str(valor or "").strip().lower()
+    return mapa.get(s, s.title() if s else "")
+
+
+def _carregar_works(fonte: Path) -> list[dict]:
+    """Lê um arquivo OpenAlex como lista de works (aceita JSON e JSONL).
+
+    Aceita: lista JSON de works; objeto de página da API (com chave `results`);
+    ou JSONL (um work por linha). Detecta pelo conteúdo, não só pela extensão.
+    """
+    texto = fonte.read_text(encoding="utf-8").strip()
+    if not texto:
+        return []
+    try:
+        dados = json.loads(texto)
+        if isinstance(dados, dict):
+            return dados.get("results", [dados])
+        return list(dados)
+    except json.JSONDecodeError:
+        # JSONL: um objeto por linha.
+        works = []
+        for linha in texto.splitlines():
+            linha = linha.strip()
+            if linha:
+                works.append(json.loads(linha))
+        return works
+
+
+def ler_openalex(fonte: Path) -> pd.DataFrame:
+    """Lê um dump OpenAlex (JSON ou JSONL) e mapeia os works ao esquema.
+
+    Campos OpenAlex usados: doi, title/display_name, authorships (autores),
+    publication_year, primary_location.source (fonte), type, language,
+    cited_by_count, primary_topic.field (estrato disciplinar em `categoria_wos`)
+    e abstract_inverted_index (resumo reconstruído).
+    """
+    works = _carregar_works(fonte)
+    linhas = []
+    for w in works:
+        autores = [
+            (a.get("author") or {}).get("display_name", "") for a in (w.get("authorships") or [])
+        ]
+        fonte_pub = ((w.get("primary_location") or {}).get("source") or {}).get(
+            "display_name", ""
+        ) or ((w.get("host_venue") or {}).get("display_name", ""))
+        campo = ((w.get("primary_topic") or {}).get("field") or {}).get("display_name", "")
+        linhas.append(
+            {
+                "doi": normalizar_doi(w.get("doi", "")),
+                "titulo": w.get("title") or w.get("display_name", ""),
+                "autores": "; ".join(a for a in autores if a),
+                "ano": _to_int(w.get("publication_year", "")),
+                "fonte": fonte_pub,
+                "categoria_wos": campo,  # OpenAlex não traz WC; usa o campo do tópico.
+                "tipo_doc": _tipo_openalex(w.get("type", "")),
+                "idioma": _idioma_openalex(w.get("language", "")),
+                "citacoes": _to_int(w.get("cited_by_count", 0)),
+                "abstract": reconstruir_abstract(w.get("abstract_inverted_index")),
+            }
+        )
+    return pd.DataFrame(linhas)
+
+
 _LEITORES = {
     "wos": ler_wos_tab,
     "scopus": ler_scopus_csv,
     "ris": ler_ris,
+    "openalex": ler_openalex,
 }
 
 
@@ -199,7 +300,7 @@ def importar(fonte: Path, base: str) -> pd.DataFrame:
     if leitor is None:
         raise ValueError(f"Base/formato não suportado: {base}. Use {list(_LEITORES)}.")
     df = leitor(fonte)
-    df["base"] = "scopus" if base == "scopus" else ("wos" if base == "wos" else "ris")
+    df["base"] = base
     return df
 
 
@@ -238,7 +339,7 @@ def main() -> None:
         "--base",
         action="append",
         required=True,
-        choices=["wos", "scopus", "ris"],
+        choices=["wos", "scopus", "ris", "openalex"],
         help="base/formato da fonte correspondente (repetível)",
     )
     args = parser.parse_args()

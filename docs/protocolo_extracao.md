@@ -99,6 +99,35 @@ python scripts/01_import_wos.py \
 
 ---
 
+## 2b. OpenAlex (JSON ou JSONL, via API aberta)
+
+A OpenAlex é aberta e gratuita, sem chave nem IP institucional, e devolve os works
+em JSON pela API `api.openalex.org/works`. O pipeline lê esse formato com
+`--base openalex`, aceitando tanto um arquivo JSON (lista de works ou uma página da
+API com a chave `results`) quanto JSONL (um work por linha).
+
+Ponto a favor: a OpenAlex guarda o resumo como `abstract_inverted_index` (índice
+invertido, não texto corrido). O importador **reconstrói o resumo** a partir desse
+índice quando ele está presente, então a análise figurativa roda de verdade. Se o
+dump não trouxe o índice, o resumo fica vazio e a análise corre na versão limitada
+(citações, área, distribuição), sem a contagem lexical.
+
+Campos mapeados: `doi`, `title`, autores (`authorships`), ano
+(`publication_year`), fonte (`primary_location.source`), tipo (`type`), idioma
+(`language`, já em código ISO), citações (`cited_by_count`), e o campo do tópico
+primário (`primary_topic.field`) na coluna `categoria_wos`, que serve de estrato
+disciplinar (a OpenAlex não traz a categoria WoS).
+
+Importar:
+
+```bash
+python scripts/01_import_wos.py --fonte corpus/exports/openalex_2026-06.json --base openalex
+```
+
+Para garantir o resumo na consulta à API, peça o campo `abstract_inverted_index`
+(no parâmetro `select` da OpenAlex, incluir `abstract_inverted_index` junto com
+`doi,title,authorships,publication_year,primary_location,type,language,cited_by_count,primary_topic`).
+
 ## 3. Alternativa: formato RIS
 
 As duas bases também exportam **RIS**, que o pipeline lê com `--base ris` (exige

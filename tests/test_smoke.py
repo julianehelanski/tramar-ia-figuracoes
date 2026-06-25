@@ -58,6 +58,14 @@ def test_contagem_respeita_exclusao():
     assert lex.contar("a social network here", padrao, exclusao) == 1
 
 
+def test_reconstrucao_de_abstract_openalex():
+    imp = _carregar("_imp_smoke", "01_import_wos.py")
+    indice = {"We": [0], "weave": [1], "a": [2], "network": [3]}
+    assert imp.reconstruir_abstract(indice) == "We weave a network"
+    assert imp.reconstruir_abstract(None) == ""  # dump sem resumo
+    assert imp.reconstruir_abstract({}) == ""
+
+
 def test_normalizacao_de_doi():
     enrich = _carregar("_enrich_smoke", "01c_api_enrich.py")
     assert enrich._norm_doi("https://doi.org/10.1/ABC") == "10.1/abc"

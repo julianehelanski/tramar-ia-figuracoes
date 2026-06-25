@@ -109,6 +109,17 @@
   com a biblioteca); a Starter API da WoS não traz resumo e a Search da Scopus só
   traz resumo na visão COMPLETE, o que sustenta manter o resumo no export manual.
 
+## 2026-06-25 (leitor OpenAlex)
+
+- `01_import_wos.py` ganhou `--base openalex`: lê dump da OpenAlex em JSON (lista de
+  works ou página da API) ou JSONL, mapeia ao esquema e **reconstrói o resumo** a
+  partir de `abstract_inverted_index` quando presente. Sem o índice, o resumo fica
+  vazio e a análise roda na versão limitada. O campo do tópico primário entra em
+  `categoria_wos` como estrato disciplinar. Testado em JSON e JSONL, com e sem
+  resumo; teste de reconstrução em `tests/`.
+- Protocolo de extração atualizado (seção 2b) com o passo OpenAlex e a recomendação
+  de pedir `abstract_inverted_index` no `select` da API.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data
