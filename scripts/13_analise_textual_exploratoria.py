@@ -161,6 +161,26 @@ def figura_keyness(key: pd.DataFrame, saida, top: int = 20) -> None:
     plt.close(fig)
 
 
+def figura_barras(
+    df: pd.DataFrame,
+    coluna_termo: str,
+    coluna_valor: str,
+    titulo: str,
+    xlabel: str,
+    saida,
+    top: int = 25,
+) -> None:
+    """Barras horizontais de uma tabela termo/valor (frequência ou n-gramas)."""
+    d = df.head(top).iloc[::-1]
+    plt.figure(figsize=(9, max(5, top * 0.32)))
+    plt.barh(d[coluna_termo], d[coluna_valor], color="#3a6f5c")
+    plt.xlabel(xlabel)
+    plt.title(titulo)
+    plt.tight_layout()
+    plt.savefig(saida, dpi=150)
+    plt.close()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--top", type=int, default=40, help="quantos termos por saída")
@@ -182,6 +202,24 @@ def main() -> None:
     ng.to_csv(saida_dir / "ngramas.csv", index=False)
 
     figura_keyness(key, FIGURAS_DIR / "keyness_polos.png", min(20, args.top))
+    figura_barras(
+        freq,
+        "termo",
+        "frequencia",
+        "Termos mais frequentes no corpus",
+        "frequência",
+        FIGURAS_DIR / "frequencia_geral.png",
+        min(25, args.top),
+    )
+    figura_barras(
+        ng,
+        "ngrama",
+        "frequencia",
+        "N-gramas mais frequentes no corpus",
+        "frequência",
+        FIGURAS_DIR / "ngramas.png",
+        min(25, args.top),
+    )
 
     print(f"Resumos analisados: {len(df)}  (sem usar o catálogo de famílias)")
     print(f"\nTop 15 termos gerais:\n{freq.head(15).to_string(index=False)}")
