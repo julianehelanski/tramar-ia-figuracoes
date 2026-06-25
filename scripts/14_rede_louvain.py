@@ -15,7 +15,7 @@ Saídas: `outputs/figuras/rede_louvain.png` e
 
 Uso:
     python scripts/14_rede_louvain.py
-    python scripts/14_rede_louvain.py --top-termos 100 --min-coocorrencia 4
+    python scripts/14_rede_louvain.py --top-termos 120 --min-assoc 0.25
 """
 
 from __future__ import annotations
@@ -72,16 +72,23 @@ def cooccorrencia(textos: list[str], top: int, min_df: int):
     return termos, freq, co
 
 
-def construir_grafo(termos, co, limiar: int) -> nx.Graph:
-    """Grafo ponderado: arestas com co-ocorrência maior ou igual ao limiar."""
+def construir_grafo(termos, freq, co, min_assoc: float) -> nx.Graph:
+    """Grafo por força de associação (cosseno) entre termos.
+
+    A aresta usa a associação normalizada `co_ij / sqrt(freq_i * freq_j)`, que tira o
+    efeito da frequência bruta. Num corpus grande, o limiar absoluto de co-ocorrência
+    geraria um grafo quase completo; a associação dá uma rede com estrutura de
+    comunidades. Mantém arestas acima de `min_assoc`.
+    """
     g = nx.Graph()
     g.add_nodes_from(termos)
     n = len(termos)
     for i in range(n):
         for j in range(i + 1, n):
-            peso = int(co[i, j])
-            if peso >= limiar:
-                g.add_edge(termos[i], termos[j], weight=peso)
+            denom = (freq[i] * freq[j]) ** 0.5
+            assoc = co[i, j] / denom if denom else 0.0
+            if assoc >= min_assoc:
+                g.add_edge(termos[i], termos[j], weight=float(assoc))
     g.remove_nodes_from(list(nx.isolates(g)))
     return g
 
@@ -111,8 +118,13 @@ def desenhar(g: nx.Graph, particao: dict, freq_map: dict, saida) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--top-termos", type=int, default=90, help="quantos termos na rede")
-    parser.add_argument("--min-coocorrencia", type=int, default=3, help="peso mínimo de aresta")
+    parser.add_argument("--top-termos", type=int, default=120, help="quantos termos na rede")
+    parser.add_argument(
+        "--min-assoc",
+        type=float,
+        default=0.25,
+        help="força de associação mínima da aresta (cosseno, 0 a 1)",
+    )
     parser.add_argument("--min-df", type=int, default=5, help="frequência mínima de documento")
     args = parser.parse_args()
 
@@ -120,9 +132,9 @@ def main() -> None:
     termos, freq, co = cooccorrencia(textos, args.top_termos, args.min_df)
     freq_map = dict(zip(termos, freq, strict=True))
 
-    g = construir_grafo(termos, co, args.min_coocorrencia)
+    g = construir_grafo(termos, freq, co, args.min_assoc)
     if g.number_of_edges() == 0:
-        raise SystemExit("Rede vazia; baixe --min-coocorrencia ou suba --top-termos.")
+        raise SystemExit("Rede vazia; baixe --min-assoc ou suba --top-termos.")
 
     particao = community_louvain.best_partition(g, weight="weight", random_state=SEED)
     mod = community_louvain.modularity(particao, g, weight="weight")

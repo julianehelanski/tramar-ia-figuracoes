@@ -51,6 +51,10 @@ we our this these those they their which using used use based paper study studie
 result approach approaches method methods model models propose proposed present presents
 show shows new also can may such been being more most than then there here was were will
 between within during per via given both each other into out over under above below not no
+however thus while but about through across among several various many much made make makes
+need needs find finds finding findings argue argues draw draws drawing two one three first
+second work works abstract article paper papers towards toward including particular often
+rather well able whether due upon according address addresses provide provides provided
 o a os as de da do das dos e em um uma para por com que se na no como entre sobre este esta
 esse essa aos pelo pela ser foi sao são este trabalho artigo nos nas mais muito tambem também
 ao à às num numa pelos pelas isso isto ja já
