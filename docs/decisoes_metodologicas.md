@@ -211,6 +211,17 @@ esquema, e a expectativa é que o número do polo crítico caia, porque era ali 
 cognição humana literal mais inflava. A leitura didática está em
 `docs/passo_a_passo_analise.md`.
 
+Correção de escopo (25/06/2026): a rodada das seções 8 usou dados da OpenAlex de IA
+em ciências humanas (Brasil), que são material do projeto irmão
+`bibliometria-ia-humanas`, e não o corpus do Tramar. Serviu de ensaio da maquinaria.
+O corpus próprio do Tramar, conforme o roteiro de pesquisa (seção 4.1), é o restritivo
+metalinguístico: artigos de IA que tematizam metáfora, figuração, tropo. A análise
+exploratória `13` confirmou empiricamente a inadequação do corpus emprestado, suas
+palavras distintivas eram de engenharia (algorithm, signal, detection) e de educação
+(students, teachers, school), e nenhum termo figurativo emergiu. Decido constituir o
+corpus do Tramar pela query restritiva, na OpenAlex (modo `--busca` de `01e`) e na WoS
+(`wos_query_v1.txt`), e rodar a mesma análise figurativa sobre ele.
+
 Extensão (25/06/2026): estendi a desambiguação de três vias às famílias materiais
 homônimas (biológica, têxtil, oceânica, extrativa), que sofriam o mesmo problema da
 antropomórfica. Nelas, a regra trata como técnica os compostos sedimentados (`neural

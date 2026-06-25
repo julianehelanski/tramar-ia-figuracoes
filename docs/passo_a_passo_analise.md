@@ -6,6 +6,16 @@ técnica e a crítica de inteligência artificial. Descreve a pergunta, o corpus
 catálogo de termos, cada passo do pipeline, o tratamento da homonímia técnica, os
 resultados e como reproduzir.
 
+> Nota de escopo (25/06/2026): a primeira rodada de ponta a ponta usou uma amostra
+> da OpenAlex de IA em ciências humanas, que é material do projeto irmão
+> `bibliometria-ia-humanas`, como ensaio da maquinaria. Aquele corpus, recortado por
+> área de conhecimento, capta quem usa IA (engenharia, educação), não quem tematiza
+> as figurações da IA, e por isso as figurações não emergiram nele. O corpus próprio
+> do Tramar, conforme o roteiro (seção 4.1), é o restritivo metalinguístico: artigos
+> de IA que falam de metáfora, figuração, tropo. A maquinaria descrita aqui é a
+> mesma; muda o corpus de entrada, constituído pela query restritiva (modo `--busca`
+> de `01e_scrape_openalex.py`, ou a `wos_query_v1.txt`).
+
 ---
 
 ## 1. O que esta análise mede

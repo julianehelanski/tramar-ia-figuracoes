@@ -60,9 +60,19 @@ MAX_AMOSTRA = 10_000  # teto da amostragem da OpenAlex por chamada
 
 
 def montar_filtro(
-    concept: str, ano_ini: int, ano_fim: int, pais: str | None, fields: str | None
+    concept: str,
+    ano_ini: int,
+    ano_fim: int,
+    pais: str | None,
+    fields: str | None,
+    busca: str | None = None,
 ) -> str:
-    """Monta o filtro da OpenAlex (vírgula = E)."""
+    """Monta o filtro da OpenAlex (vírgula = E).
+
+    Com `busca`, acrescenta uma busca de texto em título e resumo
+    (`title_and_abstract.search`), para o corpus metalinguístico restritivo: artigos
+    de IA que tematizam metáfora, figuração, tropo, antropomorfização.
+    """
     partes = [
         f"concepts.id:{concept}",
         f"from_publication_date:{ano_ini}-01-01",
@@ -72,6 +82,8 @@ def montar_filtro(
         partes.append(f"primary_topic.field.id:{fields}")
     if pais:
         partes.append(f"authorships.countries:{pais.upper()}")
+    if busca:
+        partes.append(f"title_and_abstract.search:{busca}")
     return ",".join(partes)
 
 
@@ -169,6 +181,11 @@ def main() -> None:
     parser.add_argument("--ano-final", type=int, default=2026)
     parser.add_argument("--concept", default=CONCEITO_IA, help="id do conceito OpenAlex")
     parser.add_argument(
+        "--busca",
+        default=None,
+        help="busca metalinguística em título/resumo (ex.: 'metaphor OR figuration OR trope')",
+    )
+    parser.add_argument(
         "--fields", default=None, help="estrato disciplinar (ex.: '17|22' técnico, '12|33' crítico)"
     )
     parser.add_argument("--amostra", type=int, default=None, help="N obras sorteadas (máx 10000)")
@@ -178,7 +195,9 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    filtro = montar_filtro(args.concept, args.ano_inicial, args.ano_final, args.pais, args.fields)
+    filtro = montar_filtro(
+        args.concept, args.ano_inicial, args.ano_final, args.pais, args.fields, args.busca
+    )
     escopo = args.pais.upper() if args.pais else "global"
     estrato = f" | fields {args.fields}" if args.fields else ""
     print(f"Filtro: {filtro}")

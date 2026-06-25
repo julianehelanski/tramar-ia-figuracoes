@@ -135,6 +135,16 @@
 - README didático do processo em `docs/passo_a_passo_analise.md`, com os termos do
   catálogo, para uso em apresentação. Decisão registrada na seção 8 das decisões.
 
+## 2026-06-25 (correção de escopo e instrumento metalinguístico)
+
+- Esclarecido que a amostra OpenAlex de IA em humanas era material do projeto irmão
+  `bibliometria-ia-humanas`, usada como ensaio. O corpus próprio do Tramar é o
+  restritivo metalinguístico (roteiro, seção 4.1). A análise exploratória `13`
+  confirmou a inadequação do corpus emprestado (distintivas de engenharia e
+  educação, nenhuma figuração).
+- `01e_scrape_openalex.py` ganhou `--busca` (title_and_abstract.search) para
+  constituir o corpus metalinguístico na OpenAlex. Registro em decisões, seção 8.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data
