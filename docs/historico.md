@@ -157,6 +157,18 @@
   Social Studies of Science, AI & Society, New Media & Society), não por palavra.
   `01e` ganhou modo de busca por fonte (`--issn`).
 
+## 2026-06-25 (corpus 3 por periódico: a figuração crítica emerge)
+
+- Corpus 3 constituído por filiação (periódicos críticos por ISSN vs amostra técnica
+  17|22), polo atribuído por fonte na importação. Após critérios, 7.057 críticos e
+  3.404 técnicos. Primeiro corpus em que a figuração crítica aparece: caixa pende ao
+  crítico (8,28 contra 2,94, opacidade/caixa-preta), e a têxtil crítica é figuração
+  haraweana de fato (actor-network, fabric, patchwork). A antropomórfica ficou par.
+- Louvain (`14`) migrado para força de associação (cosseno) e stopwords ampliadas, por
+  o limiar absoluto gerar grafo quase completo.
+- Resultados e ponto de retomada registrados em `docs/percurso_metodologico.md`.
+  Pendente para a próxima sessão: re-rodar `13` e `14` no corpus 3, depois a AFC.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

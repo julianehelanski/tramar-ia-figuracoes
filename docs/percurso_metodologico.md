@@ -70,29 +70,89 @@ bibliométrica serve para mostrar o que a figuração faz quando se torna operac
 das obras-fonte, que é o que faço no projeto irmão `analise-figuracoes-latour`, é onde
 a tensão se deixa ler.
 
+## Corpus 3: recorte por periódico (o terreno certo)
+
+Operacionalizei o polo crítico por filiação, não por palavra: o polo crítico pelos
+periódicos que abrigam o discurso crítico-STS (Big Data & Society, Science Technology
+& Human Values, Social Studies of Science, AI & Society, New Media & Society, por
+ISSN), e o polo técnico por uma amostra de IA em Computação e Engenharia (campos 17 e
+22, `seed=42`). O polo passou a ser atribuído na importação, por fonte, não pela área
+do artigo. Após dedup e critérios, 7.057 artigos críticos e 3.404 técnicos.
+
+É o primeiro corpus em que a figuração crítica aparece com nitidez. As ocorrências por
+100 artigos, já desambiguadas:
+
+| família | crítico | técnico |
+| :--- | ---: | ---: |
+| caixa | 8,28 | 2,94 |
+| mecânica | 36,98 | 99,94 |
+| têxtil | 6,89 | 16,83 |
+| antropomórfica | 10,46 | 12,40 |
+| oceânica | 10,40 | 25,94 |
+| biológica | 10,12 | 27,67 |
+| extrativa | 2,73 | 6,23 |
+| militar | 2,68 | 5,73 |
+| religiosa | 1,18 | 0,62 |
+
+A **caixa** pende ao crítico (8,28 contra 2,94): a literatura crítica figura a IA como
+caixa-preta, no eixo opacidade contra transparência, a crítica da accountability
+algorítmica. A **mecânica** marca o técnico. A **antropomórfica** ficou par entre os
+polos, o que desfaz a leitura inicial de que a crítica antropomorfiza mais. A **têxtil**
+no crítico (6,89) é, quando lida, a figuração haraweana e latouriana de fato:
+\enquote{grounded in actor-network theory}, \enquote{the fabric of biological and
+social existence}, \enquote{the current patchwork of European regulatory frameworks}.
+O número técnico da têxtil (16,83) ainda carrega resíduo de \enquote{network} de
+engenharia, a apertar.
+
+Achado: a figuração crítica não some, ela estava no corpus errado. Recortada por
+comunidade, emerge como caixa-preta (opacidade) e como rede material-semiótica
+(actor-network, fabric, patchwork). A tensão figural se deixa contar quando o recorte
+é por filiação, não por vocabulário nem por área.
+
 ## Sinais que sobrevivem aos três corpora
 
 Mesmo onde a figuração não organiza o campo, dois traços reaparecem:
 - a **mecânica** marca o polo técnico em todos os corpora (a IA técnica é
   mecânico-industrial: system, architecture, e, na robótica, hand, arm, joint);
 - a **caixa** e a **religiosa** pendem, fracas mas consistentes, ao polo crítico (a
-  opacidade, a caixa-preta, o oráculo).
-
-## O próximo recorte: o polo crítico por comunidade
-
-A operacionalização correta de literatura crítica é por filiação, não por palavra:
-recortar o polo crítico pelos periódicos que abrigam esse discurso (Big Data &
-Society, Science Technology & Human Values, Social Studies of Science, AI & Society,
-New Media & Society) e contrastá-lo com um polo técnico de veículos de computação. É o
-passo seguinte, com a busca por fonte da OpenAlex.
+  opacidade, a caixa-preta, o oráculo). No corpus 3, a caixa se firma.
 
 ## Quadro dos corpora
 
-| Corpus | Recorte | Artigos | Polos pela keyness |
+| Corpus | Recorte | Artigos | Polos |
 | :--- | :--- | :--- | :--- |
 | 1 | amostra por área (17,22 vs 12,33) | 6.296 | engenharia × educação |
 | 2 | busca metalinguística no título | 1.258 | robótica × linguística da metáfora |
-| 3 | por periódico crítico (a constituir) | --- | computação × crítica STS |
+| 3 | por periódico (ISSN crítico vs campos 17,22) | 10.461 | crítica STS × computação |
+
+## Ponto de retomada (sessão de 25/06/2026)
+
+Parei com o corpus 3 (por periódico) montado e o contraste do `09` rodado. Pendem,
+para a próxima sessão: rodar de novo o `13` (a keyness do corpus 3, que travou por um
+deslize de digitação) e o `14` (rede de Louvain, já melhorado para força de
+associação); depois, a AFC famílias × polo sobre este corpus, e a leitura final.
+
+Os corpora são regeneráveis (a máquina perdeu os arquivos locais, não o método):
+
+```bash
+# polo crítico por periódico (censo)
+python scripts/01e_scrape_openalex.py --sem-conceito \
+  --issn "2053-9517|0951-5666|1435-5655|0162-2439|1552-8251|0306-3127|1460-3659|1461-4448|1461-7315" \
+  --email voce@dominio --saida works_critico_venues.jsonl
+
+# polo técnico (amostra, seed fixo -> idêntica)
+python scripts/01e_scrape_openalex.py --amostra 5000 --fields "17|22" \
+  --email voce@dominio --saida works_tecnico.jsonl
+
+# importar com polo por fonte e rodar o pipeline
+python scripts/01_import_wos.py --fonte works_critico_venues.jsonl --base openalex --polo crítico
+python scripts/01_import_wos.py --fonte works_tecnico.jsonl --base openalex --polo técnico --append
+python scripts/02_dedup.py && python scripts/03_apply_criteria.py && python scripts/04_lexical_coding.py
+python scripts/04b_desambiguar.py --gerar && python scripts/04c_sugerir_desambiguacao.py --aceitar-tudo
+python scripts/04b_desambiguar.py && python scripts/09_contraste_polos.py
+python scripts/13_analise_textual_exploratoria.py --top 30
+python scripts/14_rede_louvain.py
+```
 
 As figuras de cada corpus (contraste por família e keyness) ficam em
 `outputs/figuras/`, geradas pelos passos `09`, `10` e `13`.
