@@ -241,18 +241,19 @@ def sugerir(termo: str, contexto: str) -> tuple[str, str, str]:
     return "figurativa", "baixa", "sem âncora técnica; revisar"
 
 
-def processar(caminho, aceitar_alta: bool) -> pd.DataFrame:
+def processar(caminho, aceitar_alta: bool, aceitar_tudo: bool) -> pd.DataFrame:
     """Aplica as regras a um CSV de desambiguação e devolve o DataFrame anotado."""
     df = pd.read_csv(caminho).fillna({"categoria_final": "", "categoria_sugerida": ""})
     sugest = df.apply(lambda r: sugerir(r["termo"], r["contexto"]), axis=1)
     df["categoria_sugerida"] = [s[0] for s in sugest]
     df["confianca"] = [s[1] for s in sugest]
     df["motivo"] = [s[2] for s in sugest]
-    if aceitar_alta:
-        vazias_alta = (df["categoria_final"].astype(str).str.strip() == "") & (
-            df["confianca"] == "alta"
-        )
-        df.loc[vazias_alta, "categoria_final"] = df.loc[vazias_alta, "categoria_sugerida"]
+    vazias = df["categoria_final"].astype(str).str.strip() == ""
+    if aceitar_tudo:
+        df.loc[vazias, "categoria_final"] = df.loc[vazias, "categoria_sugerida"]
+    elif aceitar_alta:
+        alvo = vazias & (df["confianca"] == "alta")
+        df.loc[alvo, "categoria_final"] = df.loc[alvo, "categoria_sugerida"]
     return df
 
 
@@ -262,6 +263,11 @@ def main() -> None:
         "--aceitar-alta",
         action="store_true",
         help="preenche categoria_final nas de alta confiança (técnicas)",
+    )
+    parser.add_argument(
+        "--aceitar-tudo",
+        action="store_true",
+        help="preenche categoria_final por toda a sugestão (versão rápida a corrigir por amostra)",
     )
     args = parser.parse_args()
 
@@ -273,7 +279,7 @@ def main() -> None:
         )
 
     for caminho in csvs:
-        df = processar(caminho, args.aceitar_alta)
+        df = processar(caminho, args.aceitar_alta, args.aceitar_tudo)
         df.to_csv(caminho, index=False)
         familia = caminho.stem.replace("desambiguacao_", "")
         n = len(df)
