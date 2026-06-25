@@ -56,3 +56,14 @@ def test_contagem_respeita_exclusao():
     exclusao = lex.compilar_padroes(["neural network"])
     assert lex.contar("a neural network here", padrao, exclusao) == 0
     assert lex.contar("a social network here", padrao, exclusao) == 1
+
+
+def test_normalizacao_de_doi():
+    enrich = _carregar("_enrich_smoke", "01c_api_enrich.py")
+    assert enrich._norm_doi("https://doi.org/10.1/ABC") == "10.1/abc"
+    assert enrich._norm_doi("doi:10.2/x") == "10.2/x"
+    assert enrich._norm_doi("10.3/Y") == "10.3/y"
+    # NaN, None e vazio não viram DOI espúrio (era o bug do filtro 'nan').
+    assert enrich._norm_doi(float("nan")) == ""
+    assert enrich._norm_doi(None) == ""
+    assert enrich._norm_doi("") == ""

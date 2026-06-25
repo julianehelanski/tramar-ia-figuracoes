@@ -94,6 +94,21 @@
   sintaxe TITLE-ABS-KEY/DOCTYPE/LANGUAGE (decisão 2.c trouxe a Scopus ao escopo).
 - Referências de PRISMA apontadas ao arquivo real `docs/prisma/fluxograma_prisma.md`.
 
+## 2026-06-24 (enriquecimento híbrido por API)
+
+- Decisão 2.c híbrida operacionalizada: o resumo vem do export manual, e os
+  metadados de citação e área vêm por DOI de API aberta. Script
+  `scripts/01c_api_enrich.py` (OpenAlex padrão, Crossref alternativo) acrescenta
+  `citacoes_openalex`, `area_openalex`, `tipo_openalex` sem sobrescrever campos
+  nativos. `requests` adicionado a `requirements.txt`; alvo `make enrich`.
+- Limitação de ambiente registrada: a política de rede do contêiner do Claude Code
+  nega a saída para essas APIs (OpenAlex devolveu 403 no proxy de egresso), então o
+  enriquecimento roda na máquina da Juliane, não no ambiente remoto. O VPN da
+  Unicamp vale para a máquina dela, não para o contêiner.
+- Sobre a API paga: depende de chave e de licença de API na assinatura (a confirmar
+  com a biblioteca); a Starter API da WoS não traz resumo e a Search da Scopus só
+  traz resumo na visão COMPLETE, o que sustenta manter o resumo no export manual.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

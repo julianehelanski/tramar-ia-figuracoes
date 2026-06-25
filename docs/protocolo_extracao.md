@@ -133,6 +133,34 @@ citações), então prefira *tab-delimited* (WoS) e CSV (Scopus) como padrão.
 
 ---
 
+## 4b. Enriquecimento por DOI via API aberta (híbrido)
+
+Decisão 2.c híbrida: o resumo vem da exportação manual, e os metadados de citação e
+área disciplinar são enriquecidos por DOI através de uma API acadêmica aberta, sem
+chave, sem licença de WoS/Scopus e sem IP institucional. Isso resolve o ponto da
+Scopus não trazer categoria WoS e atualiza as citações para uma contagem com data
+única em todo o corpus.
+
+Passo, na sua máquina (o ambiente remoto do Claude Code não alcança essas APIs, a
+política de rede do contêiner nega a saída):
+
+```bash
+python scripts/01c_api_enrich.py --email voce@unicamp.br
+# ou, alternativa: --provedor crossref
+```
+
+O script lê os DOIs de `corpus_metadata.csv`, consulta a OpenAlex em lotes de 50, e
+acrescenta as colunas `citacoes_openalex`, `area_openalex` e `tipo_openalex`, sem
+tocar no `abstract` nem nos campos nativos das bases. Registros sem DOI ficam em
+branco nessas colunas. A `area_openalex` serve de estrato disciplinar na Etapa 3,
+útil sobretudo para os registros Scopus, que vêm sem categoria WoS.
+
+Sobre a API paga das bases: WoS e Scopus têm API, mas o acesso depende de chave e de
+a assinatura da Unicamp incluir licença de API (em geral contrato à parte do acesso
+web), a confirmar com a biblioteca. Mesmo com chave, a Starter API da WoS não traz
+resumo, e a Search API da Scopus só traz resumo na visão `COMPLETE`. Por isso o
+resumo continua vindo do export manual, e a API entra só no enriquecimento.
+
 ## 5. Reexecução e versionamento
 
 - Os arquivos de `corpus/exports/` não são versionados. Guardar uma cópia no Drive

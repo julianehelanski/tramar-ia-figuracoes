@@ -5,7 +5,7 @@
 PY := python
 VENV := .venv
 
-.PHONY: help setup import dedup criteria coding refine-gen refine distribution topics subcorpus all clean
+.PHONY: help setup import dedup criteria coding enrich refine-gen refine distribution topics subcorpus all clean
 
 help:
 	@echo "Alvos:"
@@ -14,6 +14,7 @@ help:
 	@echo "  dedup        02_dedup.py"
 	@echo "  criteria     03_apply_criteria.py"
 	@echo "  coding       04_lexical_coding.py (contagem bruta)"
+	@echo "  enrich       01c_api_enrich.py (citacoes/area por DOI via OpenAlex)"
 	@echo "  refine-gen   04b_desambiguar.py --gerar (CSV em branco para classificar)"
 	@echo "  refine       04b_desambiguar.py (aplica os CSV já classificados)"
 	@echo "  distribution 05_cooccurrence.py e 06_distribution.py"
@@ -37,6 +38,9 @@ criteria:
 
 coding:
 	$(PY) scripts/04_lexical_coding.py
+
+enrich:
+	$(PY) scripts/01c_api_enrich.py
 
 refine-gen:
 	$(PY) scripts/04b_desambiguar.py --gerar

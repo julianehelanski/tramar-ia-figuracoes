@@ -10,6 +10,9 @@ bibtexparser>=1.4.0   # leitura de BibTeX quando aplicável
 spacy>=3.7.0
 nltk>=3.8.0
 
+# HTTP para enriquecimento por DOI via API aberta (01c)
+requests>=2.31.0
+
 # Configuração via .env
 python-dotenv>=1.0.0
 
