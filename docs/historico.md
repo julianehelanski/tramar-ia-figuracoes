@@ -120,6 +120,21 @@
 - Protocolo de extração atualizado (seção 2b) com o passo OpenAlex e a recomendação
   de pedir `abstract_inverted_index` no `select` da API.
 
+## 2026-06-25 (primeira análise plena e visualizações)
+
+- Amostra estratificada global da OpenAlex (5.000 técnico, 5.000 crítico, `seed=42`,
+  resumos reconstruídos), rodada de ponta a ponta. Após dedup e critérios, 6.296
+  artigos codificados.
+- Desambiguação por passe automático (`04c`, com `--aceitar-alta` e `--aceitar-tudo`)
+  e validação por amostra (`04d`). Antropomórfica 4.472 → 3.419 figurativas; militar
+  1.638 → 1.243.
+- Contraste técnico contra crítico (`09`) e figuras de leitura: barras (`10`), redes
+  de co-ocorrência por polo (`11`), radar (`12`). Achado central: antropomórfica
+  cerca de 73 (crítico) contra 38 (técnico) por 100 artigos, contraste que se acentua
+  com a desambiguação.
+- README didático do processo em `docs/passo_a_passo_analise.md`, com os termos do
+  catálogo, para uso em apresentação. Decisão registrada na seção 8 das decisões.
+
 ## Expansões do catálogo
 
 Registrar aqui cada termo ou família acrescentado durante a codificação, com data

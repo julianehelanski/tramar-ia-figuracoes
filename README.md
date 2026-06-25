@@ -77,6 +77,12 @@ A busca-piloto e a calibração da *query* estão descritas em
 `docs/decisoes_metodologicas.md`. Nenhuma etapa avança sem registro de decisão
 nesse arquivo.
 
+## Passo a passo didático
+
+Para uma explicação completa e didática do processo desta análise (corpus, catálogo
+de termos, pipeline, desambiguação, resultados e como reproduzir), própria para
+apresentação, ver `docs/passo_a_passo_analise.md`.
+
 ## Licença e citação
 
 Documento e código sob licença Creative Commons Attribution 4.0 International

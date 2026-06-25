@@ -173,3 +173,33 @@ exijo entrada acentuada. A segunda: a correspondência casa formas exatas, entã
 flexões e plurais (`tejemos` ao lado de `tejer`, `aprende` ao lado de `aprender`)
 escapam; a mesma decisão entre ampliar as listas ou lematizar, já anotada para o
 inglês, vale para pt e es.
+
+## 8. Primeira análise plena: amostra estratificada global e desambiguação (25/06/2026)
+
+Rodei a primeira análise sobre corpus real, na escala que dá o contraste técnico
+contra crítico. Decisões fixadas nesta rodada:
+
+Corpus: amostra estratificada por polo na OpenAlex, com `seed=42`. O conceito de IA
+(`concepts.id:C154945302`) em todas as áreas retorna mais de onze milhões de obras,
+o que descarta o censo. Sorteio 5.000 obras do polo técnico (campos 17 e 22) e 5.000
+do crítico (campos 12 e 33), na janela de 2015 a 2026, com resumo reconstruído do
+`abstract_inverted_index`. A estratificação por polo é deliberada: uma amostra
+aleatória simples viria dominada pela Computação e afogaria o polo crítico.
+
+Desambiguação: para tornar viável classificar milhares de ocorrências das famílias
+homônimas, adotei um passe automático por regras de contexto (`04c`), que sugere
+`tecnica` quando o contexto KWIC traz uma âncora técnica do termo, e `figurativa`
+caso contrário, registrando a âncora como motivo. Princípio fixado: a classificação
+usa só o contexto, nunca o polo do artigo, para não contaminar o contraste. A
+acurácia é conferida por amostra estratificada por confiança (`04d`, `seed=42`), e a
+correção manual prevalece sobre a regra onde a amostra revelar erro.
+
+Resultado registrado: sobre 3.404 artigos técnicos e 2.892 críticos, a figuração
+antropomórfica é cerca de 73 por 100 artigos no polo crítico contra 38 no técnico, e
+esse contraste se acentua depois da desambiguação (a razão crítico sobre técnico passa
+de 1,6 bruta para 1,9 refinada). A leitura didática completa está em
+`docs/passo_a_passo_analise.md`.
+
+Pendência anotada: a família oceânica não é desambiguada, então o `deep` de `deep
+learning` infla o polo técnico. Decido na próxima rodada se acrescento `deep` isolado
+à camada de desambiguação.
