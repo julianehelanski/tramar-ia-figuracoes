@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="weight" attr.type="long" />
+  <key id="d0" for="node" attr.name="ocorrencias" attr.type="long" />
+  <graph edgedefault="undirected">
+    <node id="textil">
+      <data key="d0">606</data>
+    </node>
+    <node id="biologica">
+      <data key="d0">1924</data>
+    </node>
+    <node id="mecanica">
+      <data key="d0">2036</data>
+    </node>
+    <node id="militar">
+      <data key="d0">899</data>
+    </node>
+    <node id="oceanica">
+      <data key="d0">1192</data>
+    </node>
+    <node id="religiosa">
+      <data key="d0">52</data>
+    </node>
+    <node id="antropomorfica">
+      <data key="d0">1997</data>
+    </node>
+    <node id="extrativa">
+      <data key="d0">492</data>
+    </node>
+    <node id="caixa">
+      <data key="d0">100</data>
+    </node>
+    <edge source="textil" target="biologica">
+      <data key="d1">316</data>
+    </edge>
+    <edge source="textil" target="mecanica">
+      <data key="d1">344</data>
+    </edge>
+    <edge source="textil" target="militar">
+      <data key="d1">178</data>
+    </edge>
+    <edge source="textil" target="oceanica">
+      <data key="d1">218</data>
+    </edge>
+    <edge source="textil" target="religiosa">
+      <data key="d1">3</data>
+    </edge>
+    <edge source="textil" target="antropomorfica">
+      <data key="d1">279</data>
+    </edge>
+    <edge source="textil" target="extrativa">
+      <data key="d1">116</data>
+    </edge>
+    <edge source="textil" target="caixa">
+      <data key="d1">20</data>
+    </edge>
+    <edge source="biologica" target="mecanica">
+      <data key="d1">955</data>
+    </edge>
+    <edge source="biologica" target="militar">
+      <data key="d1">402</data>
+    </edge>
+    <edge source="biologica" target="oceanica">
+      <data key="d1">631</data>
+    </edge>
+    <edge source="biologica" target="religiosa">
+      <data key="d1">18</data>
+    </edge>
+    <edge source="biologica" target="antropomorfica">
+      <data key="d1">998</data>
+    </edge>
+    <edge source="biologica" target="extrativa">
+      <data key="d1">267</data>
+    </edge>
+    <edge source="biologica" target="caixa">
+      <data key="d1">60</data>
+    </edge>
+    <edge source="mecanica" target="militar">
+      <data key="d1">464</data>
+    </edge>
+    <edge source="mecanica" target="oceanica">
+      <data key="d1">614</data>
+    </edge>
+    <edge source="mecanica" target="religiosa">
+      <data key="d1">19</data>
+    </edge>
+    <edge source="mecanica" target="antropomorfica">
+      <data key="d1">861</data>
+    </edge>
+    <edge source="mecanica" target="extrativa">
+      <data key="d1">270</data>
+    </edge>
+    <edge source="mecanica" target="caixa">
+      <data key="d1">56</data>
+    </edge>
+    <edge source="militar" target="oceanica">
+      <data key="d1">274</data>
+    </edge>
+    <edge source="militar" target="religiosa">
+      <data key="d1">5</data>
+    </edge>
+    <edge source="militar" target="antropomorfica">
+      <data key="d1">388</data>
+    </edge>
+    <edge source="militar" target="extrativa">
+      <data key="d1">100</data>
+    </edge>
+    <edge source="militar" target="caixa">
+      <data key="d1">26</data>
+    </edge>
+    <edge source="oceanica" target="religiosa">
+      <data key="d1">7</data>
+    </edge>
+    <edge source="oceanica" target="antropomorfica">
+      <data key="d1">536</data>
+    </edge>
+    <edge source="oceanica" target="extrativa">
+      <data key="d1">182</data>
+    </edge>
+    <edge source="oceanica" target="caixa">
+      <data key="d1">26</data>
+    </edge>
+    <edge source="religiosa" target="antropomorfica">
+      <data key="d1">27</data>
+    </edge>
+    <edge source="religiosa" target="extrativa">
+      <data key="d1">2</data>
+    </edge>
+    <edge source="religiosa" target="caixa">
+      <data key="d1">3</data>
+    </edge>
+    <edge source="antropomorfica" target="extrativa">
+      <data key="d1">235</data>
+    </edge>
+    <edge source="antropomorfica" target="caixa">
+      <data key="d1">70</data>
+    </edge>
+    <edge source="extrativa" target="caixa">
+      <data key="d1">12</data>
+    </edge>
+  </graph>
+</graphml>

@@ -1,0 +1,10 @@
+,textil,biologica,mecanica,militar,oceanica,religiosa,antropomorfica,extrativa,caixa
+textil,606,316,344,178,218,3,279,116,20
+biologica,316,1924,955,402,631,18,998,267,60
+mecanica,344,955,2036,464,614,19,861,270,56
+militar,178,402,464,899,274,5,388,100,26
+oceanica,218,631,614,274,1192,7,536,182,26
+religiosa,3,18,19,5,7,52,27,2,3
+antropomorfica,279,998,861,388,536,27,1997,235,70
+extrativa,116,267,270,100,182,2,235,492,12
+caixa,20,60,56,26,26,3,70,12,100
